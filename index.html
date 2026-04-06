@@ -71,9 +71,9 @@
       top: 0; left: 0; right: 0;
       z-index: 1000;
       padding: 1.2rem 0;
-      background: rgba(10,10,15,0.85);
+      /* background: rgba(10,10,15,0.85); */
       backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
+      /* border-bottom: 1px solid var(--border); */
     }
     nav .inner {
       max-width: 1100px; margin: 0 auto; padding: 0 2rem;
@@ -139,6 +139,7 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       margin-bottom: 1.5rem;
+      margin-top: 0.5rem;
       animation: fadeSlideDown 0.6s ease both;
     }
     .hero-badge::before {
@@ -777,9 +778,130 @@
       transition: color 0.2s;
     }
     .mobile-nav a:hover { color: var(--accent); }
+    /* Custom Pointer Styles */
+    .cursor-glow {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%);
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s;
+    }
+
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 10001;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent);
+    }
+
+    /* Hide real cursor on desktop for better effect */
+    @media (min-width: 1024px) {
+      body { cursor: none; }
+      a, button, .project-card { cursor: none; }
+    }
+    .agent-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .agent-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .agent-card:hover {
+      border-color: var(--accent2);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .agent-status {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent3);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-pulse {
+      width: 6px;
+      height: 6px;
+      background: var(--accent3);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent3);
+      animation: pulse 2s infinite;
+    }
+
+    .agent-tags {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .agent-tags span {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      background: rgba(255,255,255,0.05);
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+    }
+    
   </style>
 </head>
 <body>
+
+  <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="cursor-dot" id="cursor-dot"></div>
+
+  <script>
+    const glow = document.getElementById('cursor-glow');
+    const dot = document.getElementById('cursor-dot');
+
+    window.addEventListener('mousemove', (e) => {
+      const { clientX, clientY } = e;
+      
+      // Fast, non-blocking updates
+      requestAnimationFrame(() => {
+        dot.style.left = `${clientX}px`;
+        dot.style.top = `${clientY}px`;
+        glow.style.left = `${clientX}px`;
+        glow.style.top = `${clientY}px`;
+      });
+    });
+
+    // Expand glow on clickable elements
+    document.querySelectorAll('a, button, .project-card').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        glow.style.width = '600px';
+        glow.style.height = '600px';
+        glow.style.background = 'radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%)';
+      });
+      el.addEventListener('mouseleave', () => {
+        glow.style.width = '400px';
+        glow.style.height = '400px';
+        glow.style.background = 'radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%)';
+      });
+    });
+  </script>
 
   <!-- Orbs -->
   <div class="orb orb-1"></div>
@@ -788,10 +910,11 @@
   <!-- ─── NAV ─── -->
   <nav>
     <div class="inner">
-      <a href="#hero" class="nav-logo">ajm<span>.dev</span></a>
+      <a href="#hero" class="nav-logo">abduljalilmemon</a>
       <ul class="nav-links">
         <li><a href="#skills">Skills</a></li>
         <li><a href="#experience">Experience</a></li>
+        <li><a href="#ai-lab">Intelligence</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -817,7 +940,7 @@
     <div class="container">
       <div class="hero-inner">
         <div>
-          <div class="hero-badge">● Available for opportunities</div>
+          <div class="hero-badge">Available for opportunities</div>
           <h1 class="hero-name">Abdul Jalil<br><span class="accent">Memon</span></h1>
           <div class="hero-title">Senior Software Engineer · <span class="highlight">Python &amp; AI Systems</span></div>
           <p class="hero-desc">Building scalable backend systems, high-throughput data pipelines, and AI-driven solutions. 4+ years delivering production-grade systems in cybersecurity and AI alignment workflows.</p>
@@ -1030,6 +1153,35 @@
 
   <hr class="divider">
 
+  <section id="ai-lab">
+    <div class="container">
+      <div class="section-label">Intelligence</div>
+      <h2 class="section-title">AI Agents & <span class="accent">Automations</span></h2>
+      <p class="section-sub">Developing autonomous systems that bridge the gap between LLMs and production business logic.</p>
+
+      <div class="agent-grid">
+        <div class="agent-card">
+          <div class="agent-status"><span class="status-pulse"></span> Active Node</div>
+          <h3>AI Voice Agent (Production-Grade)</h3>
+          <p>A multi-node LangGraph system using Deepgram STT and Edge TTS. Features intent classification, RAG retrieval via ChromaDB, and automated booking logic.</p>
+          <div class="agent-tags">
+            <span>LangGraph</span><span>FastAPI</span><span>Deepgram</span><span>WebSockets</span>
+          </div>
+          <a href="https://github.com/abduljalilmemon/voice-agent" class="btn-ghost" style="margin-top: 1rem; font-size: 0.6rem;">View Architecture</a>
+        </div>
+
+        <div class="agent-card">
+          <div class="agent-status">Certified Automation</div>
+          <h3>Enterprise Sales Automation</h3>
+          <p>Built complex n8n workflows for multi-source sales reporting. Integrated Gmail, Discord, and custom API error monitoring to replace manual data processing.</p>
+          <div class="agent-tags">
+            <span>n8n</span><span>Data Integration</span><span>Error Recovery</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ─── PROJECTS ─── -->
   <section id="projects">
     <div class="container">
@@ -1061,19 +1213,16 @@
         </div>
         <div class="project-card">
           <div class="project-num">03</div>
-          <div class="project-name">Common Sense Validation (NLP)</div>
-          <p class="project-desc">Contributed to a research project validating common-sense connections between sentences containing similar words, using advanced NLP techniques and transformer-based models.</p>
+          <div class="project-name">8-bit Engine Architecture (Super Mario Game)</div>
+          <p class="project-desc">A from-scratch Super Mario implementation written in <strong>Assembly</strong>. Managed low-level memory, sprite rendering, and hardware-level collision logic without high-level abstractions.</p>
           <div class="project-stack">
-            <span class="stack-tag">Python</span>
-            <span class="stack-tag">BERT</span>
-            <span class="stack-tag">Transformers</span>
-            <span class="stack-tag">NumPy</span>
-            <span class="stack-tag">Sklearn</span>
+            <span class="stack-tag">Assembly (x86)</span>
+            <span class="stack-tag">Low-Level Systems</span>
           </div>
         </div>
       </div>
       <div style="text-align: center; margin-top: 2.5rem;">
-        <a href="https://github.com/abduljalilmemon" target="_blank" class="btn-ghost">View All on GitHub →</a>
+        <a href="https://github.com/abduljalilmemon?tab=repositories" target="_blank" class="btn-ghost">View All on GitHub →</a>
       </div>
     </div>
   </section>
@@ -1144,6 +1293,20 @@
                 <div class="cert-issuer">DeepLearning.AI · 2025</div>
               </div>
             </div>
+            <div class="cert-item">
+              <div class="cert-icon">🏅</div>
+              <div>
+                <div class="cert-name">n8n Course Level 1</div>
+                <div class="cert-issuer">n8n.io · 2026</div>
+              </div>
+            </div>
+            <div class="cert-item">
+              <div class="cert-icon">🏅</div>
+              <div>
+                <div class="cert-name">n8n Course Level 2</div>
+                <div class="cert-issuer">n8n.io · 2026</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1198,11 +1361,11 @@
         <div class="contact-form reveal">
           <div class="form-group">
             <label class="form-label">Your Name</label>
-            <input class="form-input" type="text" placeholder="John Doe">
+            <input class="form-input" type="text">
           </div>
           <div class="form-group">
             <label class="form-label">Email Address</label>
-            <input class="form-input" type="email" placeholder="john@example.com">
+            <input class="form-input" type="email">
           </div>
           <div class="form-group">
             <label class="form-label">Message</label>
