@@ -38,7 +38,6 @@
       overflow-x: hidden;
     }
 
-    /* ─── NOISE OVERLAY ─── */
     body::before {
       content: '';
       position: fixed;
@@ -49,7 +48,6 @@
       opacity: 0.4;
     }
 
-    /* ─── GRID BG ─── */
     body::after {
       content: '';
       position: fixed;
@@ -62,18 +60,14 @@
       z-index: 0;
     }
 
-    /* ─── LAYOUT ─── */
     .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
 
-    /* ─── NAV ─── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 1000;
       padding: 1.2rem 0;
-      /* background: rgba(10,10,15,0.85); */
       backdrop-filter: blur(20px);
-      /* border-bottom: 1px solid var(--border); */
     }
     nav .inner {
       max-width: 1100px; margin: 0 auto; padding: 0 2rem;
@@ -113,7 +107,6 @@
     .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
     .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); transition: all 0.3s; }
 
-    /* ─── HERO ─── */
     #hero {
       min-height: 100vh;
       display: flex; align-items: center;
@@ -233,7 +226,6 @@
       letter-spacing: 0.1em;
       margin-top: 0.2rem;
     }
-    /* Terminal Card */
     .hero-visual {
       position: relative;
       animation: fadeSlideUp 0.8s 0.3s ease both;
@@ -286,7 +278,6 @@
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    /* Glow orbs */
     .orb {
       position: absolute;
       border-radius: 50%;
@@ -306,7 +297,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ─── SECTION COMMON ─── */
     section { padding: 6rem 0; position: relative; z-index: 1; }
     .section-label {
       font-family: var(--mono);
@@ -344,7 +334,6 @@
       margin: 0;
     }
 
-    /* ─── SKILLS ─── */
     #skills { background: var(--bg2); }
     .skills-grid {
       display: grid;
@@ -385,7 +374,6 @@
     .skill-tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.05); }
     .skill-tag.hot { border-color: rgba(0,229,255,0.3); color: var(--accent); background: rgba(0,229,255,0.06); }
 
-    /* ─── EXPERIENCE ─── */
     #experience { }
     .exp-timeline { position: relative; }
     .exp-timeline::before {
@@ -462,7 +450,6 @@
       color: rgba(167,139,250,0.9);
     }
 
-    /* ─── PROJECTS ─── */
     #projects { background: var(--bg2); }
     .projects-grid {
       display: grid;
@@ -524,7 +511,6 @@
       color: rgba(52,211,153,0.85);
     }
 
-    /* ─── ABOUT ─── */
     #about { }
     .about-inner {
       display: grid;
@@ -616,7 +602,6 @@
     .cert-name { font-size: 0.88rem; font-weight: 400; color: var(--text); }
     .cert-issuer { font-family: var(--mono); font-size: 0.68rem; color: var(--accent2); margin-top: 0.1rem; }
 
-    /* ─── CONTACT ─── */
     #contact { background: var(--bg2); }
     .contact-inner {
       display: grid;
@@ -693,7 +678,6 @@
     }
     .btn-submit:hover { background: white; transform: translateY(-2px); }
 
-    /* ─── FOOTER ─── */
     footer {
       padding: 2rem 0;
       border-top: 1px solid var(--border);
@@ -724,7 +708,6 @@
     }
     .footer-links a:hover { color: var(--accent); }
 
-    /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
       .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
       .hero-visual { order: -1; }
@@ -741,7 +724,6 @@
       .hero-stats { flex-wrap: wrap; }
     }
 
-    /* ─── SCROLL REVEAL ─── */
     .reveal {
       opacity: 0;
       transform: translateY(25px);
@@ -752,7 +734,6 @@
       transform: translateY(0);
     }
 
-    /* ─── Mobile nav ─── */
     .mobile-nav {
       display: none;
       position: fixed;
@@ -778,7 +759,6 @@
       transition: color 0.2s;
     }
     .mobile-nav a:hover { color: var(--accent); }
-    /* Custom Pointer Styles */
     .cursor-glow {
       width: 400px;
       height: 400px;
@@ -806,7 +786,6 @@
       box-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent);
     }
 
-    /* Hide real cursor on desktop for better effect */
     @media (min-width: 1024px) {
       body { cursor: none; }
       a, button, .project-card { cursor: none; }
@@ -864,7 +843,7 @@
       padding: 2px 8px;
       border: 1px solid var(--border);
     }
-    
+
   </style>
 </head>
 <body>
@@ -878,8 +857,6 @@
 
     window.addEventListener('mousemove', (e) => {
       const { clientX, clientY } = e;
-      
-      // Fast, non-blocking updates
       requestAnimationFrame(() => {
         dot.style.left = `${clientX}px`;
         dot.style.top = `${clientY}px`;
@@ -888,7 +865,6 @@
       });
     });
 
-    // Expand glow on clickable elements
     document.querySelectorAll('a, button, .project-card').forEach(el => {
       el.addEventListener('mouseenter', () => {
         glow.style.width = '600px';
@@ -903,11 +879,9 @@
     });
   </script>
 
-  <!-- Orbs -->
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
 
-  <!-- ─── NAV ─── -->
   <nav>
     <div class="inner">
       <a href="#hero" class="nav-logo">abduljalilmemon</a>
@@ -926,7 +900,6 @@
     </div>
   </nav>
 
-  <!-- Mobile nav -->
   <div class="mobile-nav" id="mobileNav">
     <a href="#skills" onclick="toggleNav()">Skills</a>
     <a href="#experience" onclick="toggleNav()">Experience</a>
@@ -935,7 +908,6 @@
     <a href="#contact" onclick="toggleNav()">Contact</a>
   </div>
 
-  <!-- ─── HERO ─── -->
   <section id="hero">
     <div class="container">
       <div class="hero-inner">
@@ -943,14 +915,14 @@
           <div class="hero-badge">Available for opportunities</div>
           <h1 class="hero-name">Abdul Jalil<br><span class="accent">Memon</span></h1>
           <div class="hero-title">Senior Software Engineer · <span class="highlight">Python &amp; AI Systems</span></div>
-          <p class="hero-desc">Building scalable backend systems, high-throughput data pipelines, and AI-driven solutions. 4+ years delivering production-grade systems in cybersecurity and AI alignment workflows.</p>
+          <p class="hero-desc">Building scalable backend systems, high-throughput data pipelines, and AI-driven solutions. 5+ years delivering production-grade systems in cybersecurity and AI evaluation/alignment workflows.</p>
           <div class="hero-actions">
             <a href="#contact" class="btn-primary">Get in Touch →</a>
             <a href="#experience" class="btn-ghost">View Work</a>
           </div>
           <div class="hero-stats">
             <div class="stat-item">
-              <div class="stat-num">4+</div>
+              <div class="stat-num">5+</div>
               <div class="stat-label">Years Exp.</div>
             </div>
             <div class="stat-item">
@@ -976,7 +948,7 @@
               <div>&nbsp;</div>
               <div><span class="t-key">"name"</span>: <span class="t-str">"Abdul Jalil Memon"</span>,</div>
               <div><span class="t-key">"role"</span>: <span class="t-str">"Senior Software Engineer"</span>,</div>
-              <div><span class="t-key">"location"</span>: <span class="t-str">"Karachi, Pakistan"</span>,</div>
+              <div><span class="t-key">"location"</span>: <span class="t-str">"Cottbus, Germany"</span>,</div>
               <div><span class="t-key">"specializations"</span>: <span class="t-arr">[</span></div>
               <div>&nbsp;&nbsp;<span class="t-str">"Python Backend"</span>,</div>
               <div>&nbsp;&nbsp;<span class="t-str">"Distributed Systems"</span>,</div>
@@ -984,6 +956,7 @@
               <div>&nbsp;&nbsp;<span class="t-str">"Search Infrastructure"</span></div>
               <div><span class="t-arr">]</span>,</div>
               <div><span class="t-key">"current"</span>: <span class="t-str">"Turing · AI Dev"</span>,</div>
+              <div><span class="t-key">"education"</span>: <span class="t-str">"M.Sc. AI @ BTU Cottbus"</span>,</div>
               <div><span class="t-key">"status"</span>: <span class="t-val">"open_to_work"</span></div>
               <div>&nbsp;</div>
               <div><span class="t-prompt">$</span> <span class="cursor"></span></div>
@@ -996,7 +969,6 @@
 
   <hr class="divider">
 
-  <!-- ─── SKILLS ─── -->
   <section id="skills">
     <div class="container">
       <div class="section-label">02 / Skills</div>
@@ -1068,7 +1040,6 @@
 
   <hr class="divider">
 
-  <!-- ─── EXPERIENCE ─── -->
   <section id="experience">
     <div class="container">
       <div class="section-label">03 / Experience</div>
@@ -1081,7 +1052,7 @@
           <div class="exp-dot"></div>
           <div class="exp-header">
             <div class="exp-role">Python Developer</div>
-            <div class="exp-period">Nov 2024 – Present</div>
+            <div class="exp-period">Nov 2024 – Apr 2026</div>
           </div>
           <div class="exp-company"><span>Turing</span> · Remote</div>
           <ul class="exp-points">
@@ -1107,9 +1078,9 @@
           </div>
           <div class="exp-company"><span>TechnoGenics SMC PVT LTD</span> · Remote</div>
           <ul class="exp-points">
-            <li>Led UI/UX improvements using Angular and TypeScript, achieving a 40% increase in user satisfaction for cybersecurity search and subscription features.</li>
+            <li>Led UI/UX improvements using Angular and TypeScript, achieving a high increase in user satisfaction for cybersecurity search and subscription features.</li>
             <li>Designed a structured ANTLR query interface enhancing user search capabilities and query accuracy by 35%.</li>
-            <li>Implemented batch handling for processing up to 50,000 IOCs per message using RabbitMQ and Redis — a 10× improvement from the previous 5,000 IOCs limit.</li>
+            <li>Implemented batch handling for processing up to 50,000 IOCs per message using Kafka 10× improvement from the previous 5,000 IOCs limit.</li>
             <li>Managed a team of 6 developers, conducted PR reviews, and ensured timely project delivery.</li>
           </ul>
           <div class="exp-tags">
@@ -1182,7 +1153,8 @@
     </div>
   </section>
 
-  <!-- ─── PROJECTS ─── -->
+  <hr class="divider">
+
   <section id="projects">
     <div class="container">
       <div class="section-label">04 / Projects</div>
@@ -1191,6 +1163,17 @@
       <div class="projects-grid">
         <div class="project-card">
           <div class="project-num">01</div>
+          <div class="project-name">Microservice-Based Health Application</div>
+          <p class="project-desc">An ongoing microservice health platform, with each service maintained in its own repo under a shared GitHub organization. Currently building out the auth-service with FastAPI, PostgreSQL, and Redis.</p>
+          <div class="project-stack">
+            <span class="stack-tag">FastAPI</span>
+            <span class="stack-tag">PostgreSQL</span>
+            <span class="stack-tag">Redis</span>
+            <span class="stack-tag">Microservices</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-num">02</div>
           <div class="project-name">College Automation &amp; Scheduling System</div>
           <p class="project-desc">A robust web application to streamline management of student and staff activities. Applied best practices for UI/UX design resulting in a user-friendly, efficient tool that significantly improved task organization and tracking for colleges.</p>
           <div class="project-stack">
@@ -1202,7 +1185,7 @@
           </div>
         </div>
         <div class="project-card">
-          <div class="project-num">02</div>
+          <div class="project-num">03</div>
           <div class="project-name">Event Management System</div>
           <p class="project-desc">A Django-based system that lets users easily organize and join events. The user-friendly interface allows seamless event browsing, registration, and access to detailed event information.</p>
           <div class="project-stack">
@@ -1212,7 +1195,7 @@
           </div>
         </div>
         <div class="project-card">
-          <div class="project-num">03</div>
+          <div class="project-num">04</div>
           <div class="project-name">8-bit Engine Architecture (Super Mario Game)</div>
           <p class="project-desc">A from-scratch Super Mario implementation written in <strong>Assembly</strong>. Managed low-level memory, sprite rendering, and hardware-level collision logic without high-level abstractions.</p>
           <div class="project-stack">
@@ -1229,29 +1212,29 @@
 
   <hr class="divider">
 
-  <!-- ─── ABOUT ─── -->
   <section id="about">
     <div class="container">
       <div class="section-label">05 / About</div>
       <h2 class="section-title reveal">The Person Behind the Code</h2>
       <div class="about-inner">
         <div class="about-text reveal">
-          <p>I'm a Senior Software Engineer with 4+ years of experience building scalable backend systems, high-throughput data pipelines, and AI-driven solutions. My expertise spans Python engineering, distributed architectures, and search infrastructure.</p>
+          <p>I'm a Senior Software Engineer with 5+ years of experience building scalable backend systems, high-throughput data pipelines, and AI-driven solutions. My expertise spans Python engineering, distributed architectures, and search infrastructure.</p>
           <p>At TechnoGenics, I led backend initiatives including high-volume IOC processing pipelines, ANTLR-based structured search, ElasticSearch indexing optimizations achieving 50× faster queries, and distributed job orchestration using RabbitMQ, Kafka, and MongoDB.</p>
           <p>At Turing, I focus on AI model development and evaluation — writing clean, efficient Python code and collaborating with research teams to refine model behavior and performance in LLM alignment workflows.</p>
+          <p>I'm currently based in Cottbus, Germany, pursuing an M.Sc. in Artificial Intelligence at BTU Cottbus-Senftenberg, while staying active in student organizations including the StuRa, Pakistan Student Association (PSA) and JALTA, a student consulting network.</p>
           <p>I'm passionate about systems that scale, architectures that are clean, and teams that innovate with purpose.</p>
           <div class="about-highlights">
             <div class="highlight-row">
               <div class="hl-icon">📍</div>
               <div>
                 <div class="hl-label">Location</div>
-                <div class="hl-val">Karachi, Pakistan</div>
+                <div class="hl-val">Cottbus, Germany</div>
               </div>
             </div>
             <div class="highlight-row">
               <div class="hl-icon">💼</div>
               <div>
-                <div class="hl-label">Current Role</div>
+                <div class="hl-label">Last Role</div>
                 <div class="hl-val">Python Developer @ Turing</div>
               </div>
             </div>
@@ -1259,7 +1242,7 @@
               <div class="hl-icon">🎓</div>
               <div>
                 <div class="hl-label">Education</div>
-                <div class="hl-val">BS Computer Science · FAST-NUCES</div>
+                <div class="hl-val">M.Sc. AI · BTU Cottbus-Senftenberg</div>
               </div>
             </div>
             <div class="highlight-row">
@@ -1272,6 +1255,11 @@
           </div>
         </div>
         <div class="reveal">
+          <div class="education-card">
+            <div class="edu-degree">M.Sc. Artificial Intelligence</div>
+            <div class="edu-school">Brandenburg University of Technology (BTU) Cottbus-Senftenberg</div>
+            <div class="edu-period">In progress · through 2028 · Cottbus</div>
+          </div>
           <div class="education-card">
             <div class="edu-degree">Bachelor of Science in Computer Science</div>
             <div class="edu-school">FAST — National University of Computer &amp; Emerging Sciences</div>
@@ -1315,7 +1303,6 @@
 
   <hr class="divider">
 
-  <!-- ─── CONTACT ─── -->
   <section id="contact">
     <div class="container">
       <div class="section-label">06 / Contact</div>
@@ -1348,11 +1335,11 @@
               </div>
               <div class="cl-arrow">→</div>
             </a>
-            <a href="tel:+923477733113" class="contact-link">
+            <a href="tel:+4915252354882" class="contact-link">
               <div class="cl-icon">☏</div>
               <div>
                 <div class="cl-label">Phone</div>
-                <div class="cl-val">+92-347-7733113</div>
+                <div class="cl-val">+49 152 52354882</div>
               </div>
               <div class="cl-arrow">→</div>
             </a>
@@ -1378,7 +1365,6 @@
     </div>
   </section>
 
-  <!-- ─── FOOTER ─── -->
   <footer>
     <div class="container">
       <div class="footer-inner">
@@ -1393,7 +1379,6 @@
   </footer>
 
   <script>
-    // ─── SCROLL REVEAL ───
     const revealEls = document.querySelectorAll('.reveal, .exp-item, .project-card');
     const obs = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
@@ -1405,7 +1390,6 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     revealEls.forEach(el => obs.observe(el));
 
-    // ─── NAV HIGHLIGHT ───
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-links a');
     window.addEventListener('scroll', () => {
@@ -1418,12 +1402,10 @@
       });
     });
 
-    // ─── MOBILE NAV ───
     function toggleNav() {
       document.getElementById('mobileNav').classList.toggle('open');
     }
 
-    // ─── FORM ───
     function handleSubmit(e) {
       e.preventDefault();
       document.getElementById('form-success').style.display = 'block';
