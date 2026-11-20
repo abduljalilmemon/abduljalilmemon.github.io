@@ -8,39 +8,27 @@ import { initMetrics } from './metrics.js?v=bff14201';
 const motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 
-/* ---------- Custom cursor (fine pointer + motion allowed only) ---------- */
+/* ---------- Cursor glow (fine pointer + motion allowed only) ---------- */
+// The native cursor stays visible. The glow is positioned with a transform
+// written straight from the event (no rAF hop, no layout), so it tracks the
+// mouse with the minimum possible latency.
 function initCursor() {
   if (!finePointer.matches || !motionOK.matches) return;
   const glow = document.getElementById('cursor-glow');
-  const dot = document.getElementById('cursor-dot');
-  if (!glow || !dot) return;
+  if (!glow) return;
 
-  let x = 0, y = 0, queued = false;
-  window.addEventListener('mousemove', (e) => {
-    x = e.clientX; y = e.clientY;
+  window.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    glow.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
     document.body.classList.add('cursor-on');
-    if (queued) return;
-    queued = true;
-    requestAnimationFrame(() => {
-      dot.style.left = glow.style.left = `${x}px`;
-      dot.style.top = glow.style.top = `${y}px`;
-      queued = false;
-    });
   }, { passive: true });
-  document.addEventListener('mouseleave', () => document.body.classList.remove('cursor-on'));
+  document.documentElement.addEventListener('mouseleave', () => document.body.classList.remove('cursor-on'));
 
-  const big = 'radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%)';
-  const small = 'radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%)';
-  document.addEventListener('mouseover', (e) => {
-    if (!e.target.closest('a, button, .project-card')) return;
-    glow.style.width = glow.style.height = '600px';
-    glow.style.background = big;
-  });
+  const HOT = 'a, button, .project-card';
+  document.addEventListener('mouseover', (e) => { if (e.target.closest(HOT)) glow.classList.add('hot'); });
   document.addEventListener('mouseout', (e) => {
-    const from = e.target.closest('a, button, .project-card');
-    if (!from || from.contains(e.relatedTarget)) return;
-    glow.style.width = glow.style.height = '400px';
-    glow.style.background = small;
+    const from = e.target.closest(HOT);
+    if (from && !from.contains(e.relatedTarget)) glow.classList.remove('hot');
   });
 }
 

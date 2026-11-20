@@ -741,45 +741,36 @@ footer {
   transition: color 0.2s;
 }
 .mobile-nav a:hover { color: var(--accent); }
+/* Ambient cursor glow. The native cursor stays visible (zero latency); the
+   glow only moves via transform, so following the mouse never triggers
+   layout or repaint. Hover state = scale + cross-fade, also compositor-only. */
 .cursor-glow {
   display: none;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%);
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
+  width: 400px; height: 400px;
+  margin: -200px 0 0 -200px;
   pointer-events: none;
   z-index: 0;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s;
+  will-change: transform;
+  transition: opacity 0.2s, scale 0.3s ease;
 }
-
-.cursor-dot {
-  display: none;
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
+.cursor-glow::before, .cursor-glow::after {
+  content: '';
+  position: absolute; inset: 0;
   border-radius: 50%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 10001;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent);
+  transition: opacity 0.3s;
 }
+.cursor-glow::before { background: radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%); }
+.cursor-glow::after { background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%); opacity: 0; }
+.cursor-glow.hot { scale: 1.5; }
+.cursor-glow.hot::before { opacity: 0; }
+.cursor-glow.hot::after { opacity: 1; }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .cursor-glow, .cursor-dot { display: block; opacity: 0; transition: opacity 0.2s; }
-  .cursor-on .cursor-glow, .cursor-on .cursor-dot { opacity: 1; }
-  .cursor-glow { transition: opacity 0.2s, width 0.3s, height 0.3s; }
+  .cursor-glow { display: block; opacity: 0; }
+  .cursor-on .cursor-glow { opacity: 1; }
 }
-@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  body { cursor: none; }
-  a, button, .project-card { cursor: none; }
-}
-
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
