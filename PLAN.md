@@ -170,3 +170,20 @@ To switch, change `profile.tagline` in `js/data.js` and run `node scripts/sync-f
 | `STREAKER_DESC`      | `js/data.js` → Streaker         | One-line description             |
 | `STREAKER_URL`       | `js/data.js` → Streaker link    | Repo or demo URL                 |
 | `/cv.pdf`            | Hero "Download CV" button      | Add `cv.pdf` at the repo root (currently a 404) |
+
+## 9. Prompt 3: animated hero
+
+Modules (all content from `js/data.js`):
+
+| Module | What it means | Motion rules |
+|---|---|---|
+| `boot.js` | Startup log: brokers, index, eval harness, ready (≈1.26s) | First visit per session (`sessionStorage`); any key/click/tap skips it, even before the module loads; none under reduced motion; CSS failsafe hides it after 4s |
+| `bus-canvas.js` | producer → kafka/rabbitmq → elasticsearch → llm-judge. Packet colour = traffic type (events cyan, jobs green, evals violet); nodes ring when a packet arrives | Lazy-loaded after first paint on idle; pauses off-screen or in hidden tabs; ≤60 packets (24 under 768px); hover routing on fine pointers only; static SVG under reduced motion |
+| `terminal.js` | Live `profile.json` shell: help, whoami, skills, experience, projects, awards, contact, resume, hire, sudo hire jalil, clear | Real labelled `<input>`, `aria-live` output, history and tab completion; card keeps the fallback height (no shift) |
+| `metrics.js` | 5+ yrs · 50× ES · 10× IOC (5k → 50k/msg) · 1st Monad Blitz | Count-up once in view after boot; final values are in the HTML |
+
+Measured (headless Chrome, GPU on, 1440px): rAF p50 16.7ms and p95 17.0ms with the canvas, the same as without it.
+Layout shift during boot and typing ≈ 0.
+
+Known trade-off: on phones the terminal (above the name, as before) is now taller
+because of the `seeking` array. Worth revisiting in the redesign.

@@ -43,12 +43,70 @@ export const data = {
     ],
   },
 
-  // Each number is backed by an experience bullet below.
-  stats: [
-    { value: '5+', label: 'Years Exp.' },
-    { value: '50×', label: 'ES Speedup' },
-    { value: '10×', label: 'IOC Throughput' },
+  // Hero metric tiles. Each number is backed by an experience bullet or award.
+  // Sparklines only encode real values: years since Sep 2021, before/after
+  // steps for the two speedups, and an event tick for the award date.
+  metrics: [
+    { value: 5, suffix: '+', unit: 'yrs', label: 'Experience', tone: 'accent',
+      series: [0, 1, 2, 3, 4, 5], note: 'Years of production engineering since Sep 2021' },
+    { value: 50, suffix: '×', label: 'ES query speedup', tone: 'accent',
+      series: [1, 1, 1, 50, 50], note: 'Search query performance before and after structured indexing' },
+    { value: 10, suffix: '×', label: 'IOC throughput', detail: '5k → 50k / msg', tone: 'accent3',
+      series: [5, 5, 5, 50, 50], note: 'IOCs per Kafka message: 5,000 before, 50,000 after' },
+    { value: 1, suffix: 'st', label: 'Monad Blitz Berlin', detail: 'Sep 2026', tone: 'accent2',
+      series: null, note: 'Hackathon win, Sep 2026' },
   ],
+
+  // Boot overlay (js/boot.js). First visit per session, skipped under reduced motion.
+  boot: {
+    storageKey: 'jalil.sys.booted',
+    lines: [
+      ['ok', 'mounting kafka.brokers'],
+      ['ok', 'warming elasticsearch index (50x)'],
+      ['ok', 'loading eval harness'],
+      ['ready', 'jalil.sys'],
+    ],
+  },
+
+  // Hero message bus (js/bus-canvas.js). x/y are fractions of the hero box.
+  // Edge kind = traffic type and packet colour: events (cyan), jobs (green),
+  // evals (violet). llm-judge is the sink: packets end there.
+  bus: {
+    nodes: [
+      { id: 'producer', x: 0.045, y: 0.5 },
+      { id: 'kafka', x: 0.3, y: 0.06 },
+      { id: 'rabbitmq', x: 0.3, y: 0.95 },
+      { id: 'elasticsearch', x: 0.7, y: 0.06 },
+      { id: 'llm-judge', x: 0.955, y: 0.5 },
+    ],
+    edges: [
+      { from: 'producer', to: 'kafka', kind: 'events' },
+      { from: 'kafka', to: 'elasticsearch', kind: 'events' },
+      { from: 'elasticsearch', to: 'llm-judge', kind: 'evals' },
+      { from: 'producer', to: 'rabbitmq', kind: 'jobs' },
+      { from: 'rabbitmq', to: 'llm-judge', kind: 'evals' },
+    ],
+    legend: { events: 'events', jobs: 'jobs', evals: 'evals' },
+  },
+
+  // Interactive terminal (js/terminal.js). Output text is built from the rest of this file.
+  terminal: {
+    hint: 'type help',
+    commands: [
+      ['help', 'list commands'],
+      ['whoami', 'who is this'],
+      ['skills', 'skills by category'],
+      ['experience', 'work history'],
+      ['projects', 'running, building, shipped'],
+      ['awards', 'wins'],
+      ['contact', 'how to reach me'],
+      ['resume', 'open cv.pdf'],
+      ['hire', 'jump to the contact form'],
+      ['clear', 'clear the screen'],
+    ],
+    hidden: ['cat profile.json', 'sudo hire jalil'],
+    notFound: "command not found, try 'help'",
+  },
 
   awards: [
     {

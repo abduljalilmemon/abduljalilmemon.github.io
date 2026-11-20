@@ -21,9 +21,15 @@ export const blocks = {
   summary: (d) => esc(d.profile.summary),
   availability: (d) => esc(d.profile.availability),
 
-  stats: (d) => d.stats.map((s) =>
-    `${i(6)}<div class="stat-item">${i(7)}<div class="stat-num">${esc(s.value)}</div>${i(7)}<div class="stat-label">${esc(s.label)}</div>${i(6)}</div>`,
-  ).join('') + i(5),
+  metrics: (d) => d.metrics.map((m) => {
+    const unit = m.unit ? `<span class="metric-unit">${esc(m.unit)}</span>` : '';
+    const label = esc(m.label) + (m.detail ? ` <span class="metric-detail">· ${esc(m.detail)}</span>` : '');
+    return `${i(6)}<div class="metric-tile" data-tone="${esc(m.tone)}">` +
+      `${i(7)}<div class="metric-value"><span class="metric-num" data-count="${m.value}">${m.value}</span>${esc(m.suffix)}${unit}</div>` +
+      `${i(7)}${sparkline(m)}` +
+      `${i(7)}<div class="metric-label">${label}</div>` +
+      `${i(6)}</div>`;
+  }).join('') + i(5),
 
   terminal: (d) => {
     const t = d.profile.terminal;
@@ -124,6 +130,23 @@ export const blocks = {
     return `${i(5)}<a ${linkAttrs(L.github.url)}>GitHub</a>${i(5)}<a ${linkAttrs(L.linkedin.url)}>LinkedIn</a>${i(5)}<a href="mailto:${esc(L.email)}">Email</a>${i(4)}`;
   },
 };
+
+// Tiny SVG sparkline, 64x22. Series are step/line values from data.js;
+// a null series draws an event tick (a dated one-off, not a trend).
+function sparkline(m) {
+  const W = 64, H = 22, P = 3;
+  let body;
+  if (m.series && m.series.length > 1) {
+    const min = Math.min(...m.series), max = Math.max(...m.series);
+    const x = (k) => P + (k * (W - 2 * P)) / (m.series.length - 1);
+    const y = (v) => H - P - ((v - min) / (max - min || 1)) * (H - 2 * P);
+    const pts = m.series.map((v, k) => `${x(k).toFixed(1)} ${y(v).toFixed(1)}`);
+    body = `<path d="M${pts.join(' L')}" pathLength="1"/>`;
+  } else {
+    body = `<path d="M${P} ${H - P} H${W - 12} M${W - 8} ${H - P} V${P + 2}" pathLength="1"/><circle cx="${W - 8}" cy="${P + 2}" r="2.2"/>`;
+  }
+  return `<svg class="metric-spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(m.note)}"><title>${esc(m.note)}</title>${body}</svg>`;
+}
 
 function archive(d) {
   const items = d.archive.map((a) =>

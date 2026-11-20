@@ -1,6 +1,9 @@
 // jalil.sys: page behaviour. Loaded as an ES module (deferred by default).
 import { data } from './data.js';
 import { renderAll } from './render.js';
+import { initBoot } from './boot.js';
+import { initTerminal } from './terminal.js';
+import { initMetrics } from './metrics.js';
 
 const motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -147,6 +150,21 @@ function initContactForm() {
 // Render content from data.js first so reveal/nav observers see the final DOM.
 // If rendering throws, the static fallback in index.html stays in place.
 try { renderAll(data); } catch (err) { console.error('render failed, keeping static fallback', err); }
+
+// Each hero piece is isolated: one failing never takes the rest down.
+const safe = (name, fn) => { try { return fn(); } catch (err) { console.error(`${name} failed`, err); } };
+
+const booted = safe('boot', () => initBoot(data)) || Promise.resolve();
+safe('terminal', () => initTerminal(data, booted));
+safe('metrics', () => initMetrics(booted));
+
+// Bus canvas: loaded and started after first paint, when the browser is idle.
+const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
+requestAnimationFrame(() => idle(() => {
+  import('./bus-canvas.js')
+    .then(({ initBus }) => initBus(data))
+    .catch((err) => console.error('bus canvas failed', err));
+}, { timeout: 1000 }));
 
 initCursor();
 initReveal();
