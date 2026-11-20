@@ -187,3 +187,15 @@ Layout shift during boot and typing ≈ 0.
 
 Known trade-off: on phones the terminal (above the name, as before) is now taller
 because of the `seeking` array. Worth revisiting in the redesign.
+
+## 10. Cache busting (after the stale-CSS report)
+
+Symptom seen: new `index.html` rendered with a cached old `main.css`/`main.js`
+(unstyled metric tiles, no terminal hint, no canvas). GitHub Pages caches assets
+for about 10 minutes, so visitors could hit the same mismatch after a deploy.
+
+Fix: `node scripts/sync-fallback.mjs` now also stamps `?v=<content hash>` on
+`css/main.css`, every `js/*.js` reference in `index.html`, and every relative
+import inside `js/`. Hashes cascade through imports. **Run it after any edit
+to `css/`, `js/` or `data.js`**; `--check` fails if a version is stale.
+Sparkline SVGs also carry `width`/`height` so a CSS miss can't blow them up.

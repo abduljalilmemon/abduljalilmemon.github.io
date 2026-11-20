@@ -1,9 +1,9 @@
 // jalil.sys: page behaviour. Loaded as an ES module (deferred by default).
-import { data } from './data.js';
-import { renderAll } from './render.js';
-import { initBoot } from './boot.js';
-import { initTerminal } from './terminal.js';
-import { initMetrics } from './metrics.js';
+import { data } from './data.js?v=8aaa8cf0';
+import { renderAll } from './render.js?v=eb64cb22';
+import { initBoot } from './boot.js?v=5eea878a';
+import { initTerminal } from './terminal.js?v=ddb22a96';
+import { initMetrics } from './metrics.js?v=bff14201';
 
 const motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -161,7 +161,7 @@ safe('metrics', () => initMetrics(booted));
 // Bus canvas: loaded and started after first paint, when the browser is idle.
 const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
 requestAnimationFrame(() => idle(() => {
-  import('./bus-canvas.js')
+  import('./bus-canvas.js?v=36db171d')
     .then(({ initBus }) => initBus(data))
     .catch((err) => console.error('bus canvas failed', err));
 }, { timeout: 1000 }));

@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/main.css?v=4c041e4d">
   <script>
     // .js gates reveal styles; .boot shows the boot overlay on the first visit of a
     // session (never under reduced motion). js/boot.js clears both flags.
@@ -27,12 +27,12 @@
       } catch (e) { /* storage blocked: skip the boot */ }
     })(document.documentElement);
   </script>
-  <link rel="modulepreload" href="js/data.js">
-  <link rel="modulepreload" href="js/render.js">
-  <link rel="modulepreload" href="js/boot.js">
-  <link rel="modulepreload" href="js/terminal.js">
-  <link rel="modulepreload" href="js/metrics.js">
-  <script type="module" src="js/main.js" defer></script>
+  <link rel="modulepreload" href="js/data.js?v=8aaa8cf0">
+  <link rel="modulepreload" href="js/render.js?v=eb64cb22">
+  <link rel="modulepreload" href="js/boot.js?v=5eea878a">
+  <link rel="modulepreload" href="js/terminal.js?v=ddb22a96">
+  <link rel="modulepreload" href="js/metrics.js?v=bff14201">
+  <script type="module" src="js/main.js?v=e3166bbc" defer></script>
 </head>
 <body>
   <!-- Content blocks marked data-render are generated from js/data.js.
@@ -91,22 +91,22 @@
           <div class="metric-tiles" data-render="metrics">
             <div class="metric-tile" data-tone="accent">
               <div class="metric-value"><span class="metric-num" data-count="5">5</span>+<span class="metric-unit">yrs</span></div>
-              <svg class="metric-spark" viewBox="0 0 64 22" role="img" aria-label="Years of production engineering since Sep 2021"><title>Years of production engineering since Sep 2021</title><path d="M3.0 19.0 L14.6 15.8 L26.2 12.6 L37.8 9.4 L49.4 6.2 L61.0 3.0" pathLength="1"/></svg>
+              <svg class="metric-spark" width="64" height="22" viewBox="0 0 64 22" role="img" aria-label="Years of production engineering since Sep 2021"><title>Years of production engineering since Sep 2021</title><path d="M3.0 19.0 L14.6 15.8 L26.2 12.6 L37.8 9.4 L49.4 6.2 L61.0 3.0" pathLength="1"/></svg>
               <div class="metric-label">Experience</div>
             </div>
             <div class="metric-tile" data-tone="accent">
               <div class="metric-value"><span class="metric-num" data-count="50">50</span>×</div>
-              <svg class="metric-spark" viewBox="0 0 64 22" role="img" aria-label="Search query performance before and after structured indexing"><title>Search query performance before and after structured indexing</title><path d="M3.0 19.0 L17.5 19.0 L32.0 19.0 L46.5 3.0 L61.0 3.0" pathLength="1"/></svg>
+              <svg class="metric-spark" width="64" height="22" viewBox="0 0 64 22" role="img" aria-label="Search query performance before and after structured indexing"><title>Search query performance before and after structured indexing</title><path d="M3.0 19.0 L17.5 19.0 L32.0 19.0 L46.5 3.0 L61.0 3.0" pathLength="1"/></svg>
               <div class="metric-label">ES query speedup</div>
             </div>
             <div class="metric-tile" data-tone="accent3">
               <div class="metric-value"><span class="metric-num" data-count="10">10</span>×</div>
-              <svg class="metric-spark" viewBox="0 0 64 22" role="img" aria-label="IOCs per Kafka message: 5,000 before, 50,000 after"><title>IOCs per Kafka message: 5,000 before, 50,000 after</title><path d="M3.0 19.0 L17.5 19.0 L32.0 19.0 L46.5 3.0 L61.0 3.0" pathLength="1"/></svg>
+              <svg class="metric-spark" width="64" height="22" viewBox="0 0 64 22" role="img" aria-label="IOCs per Kafka message: 5,000 before, 50,000 after"><title>IOCs per Kafka message: 5,000 before, 50,000 after</title><path d="M3.0 19.0 L17.5 19.0 L32.0 19.0 L46.5 3.0 L61.0 3.0" pathLength="1"/></svg>
               <div class="metric-label">IOC throughput <span class="metric-detail">· 5k → 50k / msg</span></div>
             </div>
             <div class="metric-tile" data-tone="accent2">
               <div class="metric-value"><span class="metric-num" data-count="1">1</span>st</div>
-              <svg class="metric-spark" viewBox="0 0 64 22" role="img" aria-label="Hackathon win, Sep 2026"><title>Hackathon win, Sep 2026</title><path d="M3 19 H52 M56 19 V5" pathLength="1"/><circle cx="56" cy="5" r="2.2"/></svg>
+              <svg class="metric-spark" width="64" height="22" viewBox="0 0 64 22" role="img" aria-label="Hackathon win, Sep 2026"><title>Hackathon win, Sep 2026</title><path d="M3 19 H52 M56 19 V5" pathLength="1"/><circle cx="56" cy="5" r="2.2"/></svg>
               <div class="metric-label">Monad Blitz Berlin <span class="metric-detail">· Sep 2026</span></div>
             </div>
           </div>

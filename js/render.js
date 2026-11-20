@@ -145,7 +145,7 @@ function sparkline(m) {
   } else {
     body = `<path d="M${P} ${H - P} H${W - 12} M${W - 8} ${H - P} V${P + 2}" pathLength="1"/><circle cx="${W - 8}" cy="${P + 2}" r="2.2"/>`;
   }
-  return `<svg class="metric-spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(m.note)}"><title>${esc(m.note)}</title>${body}</svg>`;
+  return `<svg class="metric-spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(m.note)}"><title>${esc(m.note)}</title>${body}</svg>`;
 }
 
 function archive(d) {
