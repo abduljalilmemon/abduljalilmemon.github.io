@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Abdul Jalil Memon — Senior Software Engineer</title>
-  <meta name="description" content="Senior Software Engineer | Python, Distributed Systems, LLM Evaluation">
+  <meta name="description" content="Senior Software Engineer | Python, Distributed Systems, LLM Evaluation. Based in Cottbus, open to working student, internship and full-time roles in Germany.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon.png">
@@ -14,21 +14,21 @@
   <script type="module" src="js/main.js" defer></script>
 </head>
 <body>
+  <!-- Content blocks marked data-render are generated from js/data.js.
+       Edit data.js, then run: node scripts/sync-fallback.mjs -->
 
   <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
   <div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
 
-
   <div class="orb orb-1" aria-hidden="true"></div>
   <div class="orb orb-2" aria-hidden="true"></div>
 
-  <nav>
+  <nav aria-label="Main">
     <div class="inner">
       <a href="#hero" class="nav-logo">abduljalilmemon</a>
       <ul class="nav-links">
         <li><a href="#skills">Skills</a></li>
         <li><a href="#experience">Experience</a></li>
-        <li><a href="#ai-lab">Intelligence</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -43,7 +43,6 @@
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
     <a href="#skills">Skills</a>
     <a href="#experience">Experience</a>
-    <a href="#ai-lab">Intelligence</a>
     <a href="#projects">Projects</a>
     <a href="#about">About</a>
     <a href="#contact">Contact</a>
@@ -57,12 +56,15 @@
           <div class="hero-badge">Available for opportunities</div>
           <h1 class="hero-name">Abdul Jalil<br><span class="accent">Memon</span></h1>
           <div class="hero-title">Senior Software Engineer · <span class="highlight">Python &amp; AI Systems</span></div>
-          <p class="hero-desc">Building scalable backend systems, high-throughput data pipelines, and AI-driven solutions. 5+ years delivering production-grade systems in cybersecurity and AI evaluation/alignment workflows.</p>
+          <p class="hero-tagline" data-render="tagline">Backend systems that scale. LLM evals that don't lie.</p>
+          <p class="hero-desc" data-render="summary">Building scalable backend systems, high-throughput data pipelines, and AI-driven solutions. 5+ years delivering production-grade systems in cybersecurity and AI evaluation/alignment workflows.</p>
+          <p class="hero-availability" data-render="availability">Open to working student, internship &amp; full-time roles in Germany.</p>
           <div class="hero-actions">
             <a href="#contact" class="btn-primary">Get in Touch →</a>
             <a href="#experience" class="btn-ghost">View Work</a>
+            <a href="/cv.pdf" class="btn-ghost" download>Download CV ↓</a>
           </div>
-          <div class="hero-stats">
+          <div class="hero-stats" data-render="stats">
             <div class="stat-item">
               <div class="stat-num">5+</div>
               <div class="stat-label">Years Exp.</div>
@@ -85,7 +87,7 @@
               <div class="dot dot-g"></div>
               <span class="terminal-title">~ profile.json</span>
             </div>
-            <div class="terminal-body">
+            <div class="terminal-body" data-render="terminal">
               <div><span class="t-prompt">$</span> <span class="t-cmd">cat profile.json</span></div>
               <div>&nbsp;</div>
               <div><span class="t-key">"name"</span>: <span class="t-str">"Abdul Jalil Memon"</span>,</div>
@@ -97,8 +99,13 @@
               <div>&nbsp;&nbsp;<span class="t-str">"LLM Evaluation &amp; RLHF"</span>,</div>
               <div>&nbsp;&nbsp;<span class="t-str">"Search Infrastructure"</span></div>
               <div><span class="t-arr">]</span>,</div>
-              <div><span class="t-key">"current"</span>: <span class="t-str">"Turing · AI Dev"</span>,</div>
+              <div><span class="t-key">"last_role"</span>: <span class="t-str">"Python Developer @ Turing"</span>,</div>
               <div><span class="t-key">"education"</span>: <span class="t-str">"M.Sc. AI @ BTU Cottbus"</span>,</div>
+              <div><span class="t-key">"seeking"</span>: <span class="t-arr">[</span></div>
+              <div>&nbsp;&nbsp;<span class="t-str">"working_student"</span>,</div>
+              <div>&nbsp;&nbsp;<span class="t-str">"internship"</span>,</div>
+              <div>&nbsp;&nbsp;<span class="t-str">"full_time"</span></div>
+              <div><span class="t-arr">]</span>,</div>
               <div><span class="t-key">"status"</span>: <span class="t-val">"open_to_work"</span></div>
               <div>&nbsp;</div>
               <div><span class="t-prompt">$</span> <span class="cursor"></span></div>
@@ -109,14 +116,30 @@
     </div>
   </section>
 
+  <section id="awards" class="awards">
+    <div class="container">
+      <div class="section-label">02 / Awards</div>
+      <div class="award-list reveal" data-render="awards">
+        <article class="award-item">
+          <div class="award-rank" aria-hidden="true">1st</div>
+          <div class="award-body">
+            <h3 class="award-title">1st Place · Monad Blitz Berlin Hackathon</h3>
+            <div class="award-meta">Encode Club / Monad Foundation · CIC Berlin · Sep 2026</div>
+            <p class="award-note">Project <a href="#project-streaker">Streaker</a>, built with a small team; working demo shipped within the event deadline.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <hr class="divider">
 
   <section id="skills">
     <div class="container">
-      <div class="section-label">02 / Skills</div>
+      <div class="section-label">03 / Skills</div>
       <h2 class="section-title reveal">Technical Arsenal</h2>
       <p class="section-sub reveal">Tools and technologies I use to build robust, scalable systems.</p>
-      <div class="skills-grid reveal">
+      <div class="skills-grid reveal" data-render="skills">
         <div class="skill-category">
           <div class="skill-cat-name">Languages</div>
           <div class="skill-tags">
@@ -161,6 +184,11 @@
           <div class="skill-tags">
             <span class="skill-tag hot">LLM Evaluation</span>
             <span class="skill-tag hot">RLHF</span>
+            <span class="skill-tag hot">LangGraph</span>
+            <span class="skill-tag">LangChain</span>
+            <span class="skill-tag">RAG</span>
+            <span class="skill-tag">ChromaDB</span>
+            <span class="skill-tag">LLM-as-judge / Evals</span>
             <span class="skill-tag">SFT</span>
             <span class="skill-tag">NLP / BERT</span>
             <span class="skill-tag">Prompt Eng.</span>
@@ -176,6 +204,12 @@
             <span class="skill-tag">Search &amp; Indexing</span>
           </div>
         </div>
+        <div class="skill-category">
+          <div class="skill-cat-name">Automation</div>
+          <div class="skill-tags">
+            <span class="skill-tag hot">n8n · Certified L1 + L2</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -184,16 +218,14 @@
 
   <section id="experience">
     <div class="container">
-      <div class="section-label">03 / Experience</div>
+      <div class="section-label">04 / Experience</div>
       <h2 class="section-title reveal">Where I've Worked</h2>
       <p class="section-sub reveal">Building production systems that scale, from cybersecurity platforms to AI alignment pipelines.</p>
-
-      <div class="exp-timeline">
-
+      <div class="exp-timeline" data-render="experience">
         <div class="exp-item">
           <div class="exp-dot"></div>
           <div class="exp-header">
-            <div class="exp-role">Python Developer</div>
+            <h3 class="exp-role">Python Developer</h3>
             <div class="exp-period">Nov 2024 – Apr 2026</div>
           </div>
           <div class="exp-company"><span>Turing</span> · Remote</div>
@@ -211,18 +243,17 @@
             <span class="exp-tag">AI Alignment</span>
           </div>
         </div>
-
         <div class="exp-item">
           <div class="exp-dot" style="background: var(--accent2); box-shadow: 0 0 12px var(--accent2);"></div>
           <div class="exp-header">
-            <div class="exp-role">Senior Software Engineer</div>
+            <h3 class="exp-role">Senior Software Engineer</h3>
             <div class="exp-period">Aug 2024 – Dec 2024</div>
           </div>
           <div class="exp-company"><span>TechnoGenics SMC PVT LTD</span> · Remote</div>
           <ul class="exp-points">
             <li>Led UI/UX improvements using Angular and TypeScript, achieving a high increase in user satisfaction for cybersecurity search and subscription features.</li>
             <li>Designed a structured ANTLR query interface enhancing user search capabilities and query accuracy by 35%.</li>
-            <li>Implemented batch handling for processing up to 50,000 IOCs per message using Kafka 10× improvement from the previous 5,000 IOCs limit.</li>
+            <li>Implemented batch handling for processing up to 50,000 IOCs per message using Kafka, a 10× improvement over the previous 5,000 IOC limit.</li>
             <li>Managed a team of 6 developers, conducted PR reviews, and ensured timely project delivery.</li>
           </ul>
           <div class="exp-tags">
@@ -234,11 +265,10 @@
             <span class="exp-tag">Team Lead</span>
           </div>
         </div>
-
         <div class="exp-item">
           <div class="exp-dot" style="background: var(--accent3); box-shadow: 0 0 12px var(--accent3);"></div>
           <div class="exp-header">
-            <div class="exp-role">Software Engineer</div>
+            <h3 class="exp-role">Software Engineer</h3>
             <div class="exp-period">Sep 2021 – Jul 2024</div>
           </div>
           <div class="exp-company"><span>TechnoGenics SMC PVT LTD</span> · Lahore</div>
@@ -259,38 +289,6 @@
             <span class="exp-tag">GCP</span>
           </div>
         </div>
-
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <section id="ai-lab">
-    <div class="container">
-      <div class="section-label">04 / Intelligence</div>
-      <h2 class="section-title">AI Agents & <span class="accent">Automations</span></h2>
-      <p class="section-sub">Developing autonomous systems that bridge the gap between LLMs and production business logic.</p>
-
-      <div class="agent-grid">
-        <div class="agent-card">
-          <div class="agent-status"><span class="status-pulse"></span> Active Node</div>
-          <h3>AI Voice Agent (Production-Grade)</h3>
-          <p>A multi-node LangGraph system using Deepgram STT and Edge TTS. Features intent classification, RAG retrieval via ChromaDB, and automated booking logic.</p>
-          <div class="agent-tags">
-            <span>LangGraph</span><span>FastAPI</span><span>Deepgram</span><span>WebSockets</span>
-          </div>
-          <a href="https://github.com/abduljalilmemon/voice-agent" target="_blank" rel="noopener" class="btn-ghost" style="margin-top: 1rem; font-size: 0.6rem;">View Architecture</a>
-        </div>
-
-        <div class="agent-card">
-          <div class="agent-status">Certified Automation</div>
-          <h3>Enterprise Sales Automation</h3>
-          <p>Built complex n8n workflows for multi-source sales reporting. Integrated Gmail, Discord, and custom API error monitoring to replace manual data processing.</p>
-          <div class="agent-tags">
-            <span>n8n</span><span>Data Integration</span><span>Error Recovery</span>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -301,11 +299,38 @@
     <div class="container">
       <div class="section-label">05 / Projects</div>
       <h2 class="section-title reveal">Featured Work</h2>
-      <p class="section-sub reveal">A selection of projects that demonstrate my range across backend systems, AI, and web development.</p>
-      <div class="projects-grid">
-        <div class="project-card">
-          <div class="project-num">01</div>
-          <div class="project-name">Microservice-Based Health Application</div>
+      <p class="section-sub reveal">Agent evals, real-time voice AI, backend services and the odd low-level experiment. Status shows what is running, building, shipped or archived.</p>
+      <div class="projects-grid" data-render="projects">
+        <article class="project-card" id="project-swapcheck">
+          <!-- SWAPCHECK_REPO_URL -->
+          <div class="project-meta"><span class="project-num">01</span><span class="project-status" data-status="building">building</span></div>
+          <h3 class="project-name">SwapCheck</h3>
+          <p class="project-desc">Agent evaluation harness that gives a SHIP / HOLD verdict when you swap the model behind an agent. Replays scenarios, scores them with LLM-as-judge plus rule checks, and compares the results against a reference config.</p>
+          <div class="project-stack">
+            <span class="stack-tag">Agent Evals</span>
+            <span class="stack-tag">LLM-as-judge</span>
+            <span class="stack-tag">Rule-based Scoring</span>
+            <span class="stack-tag">Scenario Replay</span>
+          </div>
+        </article>
+        <article class="project-card flagship" id="project-voice-agent">
+          <div class="project-meta"><span class="project-num">02 · flagship</span><span class="project-status" data-status="running">running</span></div>
+          <h3 class="project-name">Real-Time AI Voice Agent</h3>
+          <p class="project-desc">A multi-node LangGraph system with Deepgram speech-to-text and Edge TTS, streamed over WebSockets from a FastAPI backend. Classifies caller intent, retrieves answers via RAG on ChromaDB, and runs automated booking logic.</p>
+          <div class="project-stack">
+            <span class="stack-tag">LangGraph</span>
+            <span class="stack-tag">ChromaDB</span>
+            <span class="stack-tag">RAG</span>
+            <span class="stack-tag">Deepgram STT</span>
+            <span class="stack-tag">Edge TTS</span>
+            <span class="stack-tag">FastAPI</span>
+            <span class="stack-tag">WebSockets</span>
+          </div>
+          <div class="project-links"><a href="https://github.com/abduljalilmemon/voice-agent" target="_blank" rel="noopener">View Architecture →</a></div>
+        </article>
+        <article class="project-card" id="project-health-platform">
+          <div class="project-meta"><span class="project-num">03</span><span class="project-status" data-status="building">building</span></div>
+          <h3 class="project-name">Microservice Health Platform</h3>
           <p class="project-desc">An ongoing microservice health platform, with each service maintained in its own repo under a shared GitHub organization. Currently building out the auth-service with FastAPI, PostgreSQL, and Redis.</p>
           <div class="project-stack">
             <span class="stack-tag">FastAPI</span>
@@ -313,38 +338,50 @@
             <span class="stack-tag">Redis</span>
             <span class="stack-tag">Microservices</span>
           </div>
-        </div>
-        <div class="project-card">
-          <div class="project-num">02</div>
-          <div class="project-name">College Automation &amp; Scheduling System</div>
-          <p class="project-desc">A robust web application to streamline management of student and staff activities. Applied best practices for UI/UX design resulting in a user-friendly, efficient tool that significantly improved task organization and tracking for colleges.</p>
+        </article>
+        <article class="project-card" id="project-streaker">
+          <!-- STREAKER_DESC --><!-- STREAKER_URL -->
+          <div class="project-meta"><span class="project-num">04</span><span class="project-status" data-status="shipped">shipped</span></div>
+          <h3 class="project-name">Streaker</h3>
+          <div class="project-award">🏆 1st Place · Monad Blitz Berlin</div>
+          <p class="project-desc">Built with a small team at Monad Blitz Berlin (Sep 2026); working demo shipped within the event deadline.</p>
+        </article>
+        <article class="project-card" id="project-sales-automation">
+          <div class="project-meta"><span class="project-num">05</span></div>
+          <h3 class="project-name">Enterprise Sales Automation (n8n)</h3>
+          <p class="project-desc">Built complex n8n workflows for multi-source sales reporting. Integrated Gmail, Discord, and custom API error monitoring to replace manual data processing.</p>
           <div class="project-stack">
-            <span class="stack-tag">Django</span>
-            <span class="stack-tag">HTML/CSS</span>
-            <span class="stack-tag">Bootstrap 4</span>
-            <span class="stack-tag">MySQL</span>
-            <span class="stack-tag">JavaScript</span>
+            <span class="stack-tag">n8n</span>
+            <span class="stack-tag">Data Integration</span>
+            <span class="stack-tag">Error Recovery</span>
           </div>
-        </div>
-        <div class="project-card">
-          <div class="project-num">03</div>
-          <div class="project-name">Event Management System</div>
-          <p class="project-desc">A Django-based system that lets users easily organize and join events. The user-friendly interface allows seamless event browsing, registration, and access to detailed event information.</p>
-          <div class="project-stack">
-            <span class="stack-tag">Django</span>
-            <span class="stack-tag">SQLite</span>
-            <span class="stack-tag">Python</span>
-          </div>
-        </div>
-        <div class="project-card">
-          <div class="project-num">04</div>
-          <div class="project-name">8-bit Engine Architecture (Super Mario Game)</div>
-          <p class="project-desc">A from-scratch Super Mario implementation written in <strong>Assembly</strong>. Managed low-level memory, sprite rendering, and hardware-level collision logic without high-level abstractions.</p>
+        </article>
+        <article class="project-card" id="project-mario-asm">
+          <div class="project-meta"><span class="project-num">06</span><span class="project-status" data-status="archived">archived</span></div>
+          <h3 class="project-name">8-bit Super Mario in x86 Assembly</h3>
+          <p class="project-desc">A from-scratch Super Mario implementation written in Assembly. Managed low-level memory, sprite rendering, and hardware-level collision logic without high-level abstractions.</p>
           <div class="project-stack">
             <span class="stack-tag">Assembly (x86)</span>
             <span class="stack-tag">Low-Level Systems</span>
           </div>
-        </div>
+        </article>
+        <details class="project-archive">
+          <summary><span class="archive-label">Archive</span> <span class="archive-count">2 legacy projects</span></summary>
+          <div class="archive-body">
+            <ul class="archive-list">
+              <li class="archive-item">
+                <div class="archive-name">College Automation &amp; Scheduling System</div>
+                <p class="archive-desc">A robust web application to streamline management of student and staff activities. Applied best practices for UI/UX design resulting in a user-friendly, efficient tool that significantly improved task organization and tracking for colleges.</p>
+                <div class="project-stack"><span class="stack-tag">Django</span><span class="stack-tag">HTML/CSS</span><span class="stack-tag">Bootstrap 4</span><span class="stack-tag">MySQL</span><span class="stack-tag">JavaScript</span></div>
+              </li>
+              <li class="archive-item">
+                <div class="archive-name">Event Management System</div>
+                <p class="archive-desc">A Django-based system that lets users easily organize and join events. The user-friendly interface allows seamless event browsing, registration, and access to detailed event information.</p>
+                <div class="project-stack"><span class="stack-tag">Django</span><span class="stack-tag">SQLite</span><span class="stack-tag">Python</span></div>
+              </li>
+            </ul>
+          </div>
+        </details>
       </div>
       <div style="text-align: center; margin-top: 2.5rem;">
         <a href="https://github.com/abduljalilmemon?tab=repositories" target="_blank" rel="noopener" class="btn-ghost">View All on GitHub →</a>
@@ -360,35 +397,37 @@
       <h2 class="section-title reveal">The Person Behind the Code</h2>
       <div class="about-inner">
         <div class="about-text reveal">
+          <div data-render="about">
           <p>I'm a Senior Software Engineer with 5+ years of experience building scalable backend systems, high-throughput data pipelines, and AI-driven solutions. My expertise spans Python engineering, distributed architectures, and search infrastructure.</p>
           <p>At TechnoGenics, I led backend initiatives including high-volume IOC processing pipelines, ANTLR-based structured search, ElasticSearch indexing optimizations achieving 50× faster queries, and distributed job orchestration using RabbitMQ, Kafka, and MongoDB.</p>
-          <p>At Turing, I focus on AI model development and evaluation — writing clean, efficient Python code and collaborating with research teams to refine model behavior and performance in LLM alignment workflows.</p>
+          <p>At Turing (Nov 2024 – Apr 2026), I worked on AI model development and evaluation — writing clean, efficient Python code and collaborating with research teams to refine model behavior and performance in LLM alignment workflows.</p>
           <p>I'm currently based in Cottbus, Germany, pursuing an M.Sc. in Artificial Intelligence at BTU Cottbus-Senftenberg, while staying active in student organizations including the StuRa, Pakistan Student Association (PSA) and JALTA, a student consulting network.</p>
           <p>I'm passionate about systems that scale, architectures that are clean, and teams that innovate with purpose.</p>
-          <div class="about-highlights">
+        </div>
+          <div class="about-highlights" data-render="highlights">
             <div class="highlight-row">
-              <div class="hl-icon">📍</div>
+              <div class="hl-icon" aria-hidden="true">📍</div>
               <div>
                 <div class="hl-label">Location</div>
                 <div class="hl-val">Cottbus, Germany</div>
               </div>
             </div>
             <div class="highlight-row">
-              <div class="hl-icon">💼</div>
+              <div class="hl-icon" aria-hidden="true">💼</div>
               <div>
                 <div class="hl-label">Last Role</div>
                 <div class="hl-val">Python Developer @ Turing</div>
               </div>
             </div>
             <div class="highlight-row">
-              <div class="hl-icon">🎓</div>
+              <div class="hl-icon" aria-hidden="true">🎓</div>
               <div>
                 <div class="hl-label">Education</div>
                 <div class="hl-val">M.Sc. AI · BTU Cottbus-Senftenberg</div>
               </div>
             </div>
             <div class="highlight-row">
-              <div class="hl-icon">✉️</div>
+              <div class="hl-icon" aria-hidden="true">✉️</div>
               <div>
                 <div class="hl-label">Email</div>
                 <div class="hl-val">abduljaleelmemon3@gmail.com</div>
@@ -397,6 +436,7 @@
           </div>
         </div>
         <div class="reveal">
+          <div data-render="education">
           <div class="education-card">
             <div class="edu-degree">M.Sc. Artificial Intelligence</div>
             <div class="edu-school">Brandenburg University of Technology (BTU) Cottbus-Senftenberg</div>
@@ -407,36 +447,39 @@
             <div class="edu-school">FAST — National University of Computer &amp; Emerging Sciences</div>
             <div class="edu-period">Aug 2017 – Jul 2021 · Islamabad</div>
           </div>
+        </div>
           <div class="cert-list">
-            <div style="font-family: var(--mono); font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 0.75rem;">Certifications</div>
+            <h3 class="cert-heading">Certifications</h3>
+            <div data-render="certifications">
             <div class="cert-item">
-              <div class="cert-icon">🏅</div>
+              <div class="cert-icon" aria-hidden="true">🏅</div>
               <div>
                 <div class="cert-name">Building AI Browser Agents</div>
                 <div class="cert-issuer">DeepLearning.AI · 2025</div>
               </div>
             </div>
             <div class="cert-item">
-              <div class="cert-icon">🏅</div>
+              <div class="cert-icon" aria-hidden="true">🏅</div>
               <div>
                 <div class="cert-name">ChatGPT Prompt Engineering for Developers</div>
                 <div class="cert-issuer">DeepLearning.AI · 2025</div>
               </div>
             </div>
             <div class="cert-item">
-              <div class="cert-icon">🏅</div>
+              <div class="cert-icon" aria-hidden="true">🏅</div>
               <div>
                 <div class="cert-name">n8n Course Level 1</div>
                 <div class="cert-issuer">n8n.io · 2026</div>
               </div>
             </div>
             <div class="cert-item">
-              <div class="cert-icon">🏅</div>
+              <div class="cert-icon" aria-hidden="true">🏅</div>
               <div>
                 <div class="cert-name">n8n Course Level 2</div>
                 <div class="cert-issuer">n8n.io · 2026</div>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -449,41 +492,33 @@
     <div class="container">
       <div class="section-label">07 / Contact</div>
       <h2 class="section-title reveal">Let's Build Something</h2>
-      <p class="section-sub reveal">Open to senior engineering roles, AI/ML opportunities, and interesting collaborations. Let's talk.</p>
+      <p class="section-sub reveal">Open to working student, internship and full-time roles in Germany, plus interesting collaborations. Let's talk.</p>
       <div class="contact-inner">
         <div class="reveal">
-          <div class="contact-links">
+          <div class="contact-links" data-render="contactLinks">
             <a href="mailto:abduljaleelmemon3@gmail.com" class="contact-link">
-              <div class="cl-icon">✉</div>
+              <div class="cl-icon" aria-hidden="true">✉</div>
               <div>
                 <div class="cl-label">Email</div>
                 <div class="cl-val">abduljaleelmemon3@gmail.com</div>
               </div>
-              <div class="cl-arrow">→</div>
+              <div class="cl-arrow" aria-hidden="true">→</div>
             </a>
             <a href="https://linkedin.com/in/abdul-jalil-memon" target="_blank" rel="noopener" class="contact-link">
-              <div class="cl-icon">in</div>
+              <div class="cl-icon" aria-hidden="true">in</div>
               <div>
                 <div class="cl-label">LinkedIn</div>
                 <div class="cl-val">abdul-jalil-memon</div>
               </div>
-              <div class="cl-arrow">→</div>
+              <div class="cl-arrow" aria-hidden="true">→</div>
             </a>
             <a href="https://github.com/abduljalilmemon" target="_blank" rel="noopener" class="contact-link">
-              <div class="cl-icon" style="font-family: var(--mono); font-size: 0.85rem;">gh</div>
+              <div class="cl-icon" style="font-family: var(--mono); font-size: 0.85rem;" aria-hidden="true">gh</div>
               <div>
                 <div class="cl-label">GitHub</div>
                 <div class="cl-val">abduljalilmemon</div>
               </div>
-              <div class="cl-arrow">→</div>
-            </a>
-            <a href="tel:+4915252354882" class="contact-link">
-              <div class="cl-icon">☏</div>
-              <div>
-                <div class="cl-label">Phone</div>
-                <div class="cl-val">+49 152 52354882</div>
-              </div>
-              <div class="cl-arrow">→</div>
+              <div class="cl-arrow" aria-hidden="true">→</div>
             </a>
           </div>
         </div>
@@ -515,7 +550,7 @@
     <div class="container">
       <div class="footer-inner">
         <div class="footer-copy">© 2026 <span>Abdul Jalil Memon</span>. Built with precision.</div>
-        <div class="footer-links">
+        <div class="footer-links" data-render="footerLinks">
           <a href="https://github.com/abduljalilmemon" target="_blank" rel="noopener">GitHub</a>
           <a href="https://linkedin.com/in/abdul-jalil-memon" target="_blank" rel="noopener">LinkedIn</a>
           <a href="mailto:abduljaleelmemon3@gmail.com">Email</a>
@@ -523,6 +558,5 @@
       </div>
     </div>
   </footer>
-
 </body>
 </html>

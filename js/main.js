@@ -1,4 +1,6 @@
 // jalil.sys: page behaviour. Loaded as an ES module (deferred by default).
+import { data } from './data.js';
+import { renderAll } from './render.js';
 
 const motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -141,6 +143,10 @@ function initContactForm() {
     }
   });
 }
+
+// Render content from data.js first so reveal/nav observers see the final DOM.
+// If rendering throws, the static fallback in index.html stays in place.
+try { renderAll(data); } catch (err) { console.error('render failed, keeping static fallback', err); }
 
 initCursor();
 initReveal();

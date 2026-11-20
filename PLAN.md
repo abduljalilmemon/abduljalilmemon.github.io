@@ -134,9 +134,39 @@ Verification: `python3 -m http.server`; compare 375px and 1440px before and afte
 (the page should look identical except for the cursor and nav fixes); check the console for errors;
 submit the form with the placeholder ID and confirm the error state appears, not a success message.
 
-## 7. Placeholders
+## 7. Prompt 2: content (data.js)
 
-| Placeholder    | Where              | Needed from you                    |
-|----------------|--------------------|------------------------------------|
-| `FORMSPREE_ID` | `index.html` form  | Formspree form ID (`/f/xxxxxxx`)   |
-| `STREAKER_DESC`, `STREAKER_URL` | Projects | Answer to Q3          |
+### Hero tagline: pick one (option 1 is live until you choose)
+
+1. **"Backend systems that scale. LLM evals that don't lie."** *(live)*
+2. "I build the queues, search and pipelines underneath, and the evals that tell you if the model on top is any good."
+3. "From 50,000-IOC Kafka batches to SHIP / HOLD verdicts on model swaps."
+
+To switch, change `profile.tagline` in `js/data.js` and run `node scripts/sync-fallback.mjs`.
+
+### How content works now
+
+- `js/data.js` is the single source for profile, stats, awards, skills, experience,
+  projects, archive, education, certifications and links.
+- `js/render.js` holds pure string builders. `main.js` re-renders every `[data-render]`
+  block on load; if that throws, the static HTML stays.
+- `scripts/sync-fallback.mjs` (Node, no deps, optional) writes the same output into
+  `index.html` so the page reads with JS off. `--check` fails if the fallback is stale.
+  This is a dev helper, not a deploy step.
+- UPPER_SNAKE placeholders never reach the page: placeholder links are dropped, and a
+  placeholder description falls back to `descFallback`. They stay as HTML comments so grep finds them.
+
+### Section order
+
+01 Status (hero) · 02 Awards · 03 Skills · 04 Experience · 05 Projects · 06 About · 07 Contact.
+`#ai-lab` was merged into Projects (Voice Agent = flagship; n8n = project 05).
+
+## 8. Placeholders and missing files
+
+| Placeholder          | Where                          | Needed from you                  |
+|----------------------|--------------------------------|----------------------------------|
+| `FORMSPREE_ID`       | `index.html` contact form      | Formspree form ID (`/f/xxxxxxx`) |
+| `SWAPCHECK_REPO_URL` | `js/data.js` → SwapCheck link   | Repo URL                         |
+| `STREAKER_DESC`      | `js/data.js` → Streaker         | One-line description             |
+| `STREAKER_URL`       | `js/data.js` → Streaker link    | Repo or demo URL                 |
+| `/cv.pdf`            | Hero "Download CV" button      | Add `cv.pdf` at the repo root (currently a 404) |
