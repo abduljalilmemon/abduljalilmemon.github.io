@@ -1,8 +1,12 @@
 // jalil.sys: page behaviour. Loaded as an ES module (deferred by default).
-import { data } from './data.js?v=8aaa8cf0';
-import { renderAll } from './render.js?v=eb64cb22';
+import { data } from './data.js?v=850e69d9';
+import { renderAll } from './render.js?v=e0a21533';
 import { initBoot } from './boot.js?v=5eea878a';
-import { initTerminal } from './terminal.js?v=ddb22a96';
+import { initTerminal } from './terminal.js?v=b40a3412';
+import { initTrace } from './trace.js?v=8c662fe2';
+import { initCards } from './cards.js?v=91bd5b31';
+import { initPalette } from './palette.js?v=a55b138b';
+import { initEffects } from './effects.js?v=3bf109ab';
 import { initMetrics } from './metrics.js?v=bff14201';
 
 const motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
@@ -137,7 +141,8 @@ function initContactForm() {
 
 // Render content from data.js first so reveal/nav observers see the final DOM.
 // If rendering throws, the static fallback in index.html stays in place.
-try { renderAll(data); } catch (err) { console.error('render failed, keeping static fallback', err); }
+const dev = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+try { renderAll(data, document, { dev, now: new Date() }); } catch (err) { console.error('render failed, keeping static fallback', err); }
 
 // Each hero piece is isolated: one failing never takes the rest down.
 const safe = (name, fn) => { try { return fn(); } catch (err) { console.error(`${name} failed`, err); } };
@@ -145,11 +150,15 @@ const safe = (name, fn) => { try { return fn(); } catch (err) { console.error(`$
 const booted = safe('boot', () => initBoot(data)) || Promise.resolve();
 safe('terminal', () => initTerminal(data, booted));
 safe('metrics', () => initMetrics(booted));
+safe('trace', () => initTrace());
+safe('cards', () => initCards());
+safe('palette', () => initPalette(data));
+safe('effects', () => initEffects());
 
 // Bus canvas: loaded and started after first paint, when the browser is idle.
 const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
 requestAnimationFrame(() => idle(() => {
-  import('./bus-canvas.js?v=36db171d')
+  import('./bus-canvas.js?v=e72913eb')
     .then(({ initBus }) => initBus(data))
     .catch((err) => console.error('bus canvas failed', err));
 }, { timeout: 1000 }));

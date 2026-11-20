@@ -3,7 +3,7 @@
 // commands. Real <input> with a label; command output goes to an
 // aria-live="polite" region. All text comes from data.js.
 
-import { blocks } from './render.js?v=eb64cb22';
+import { blocks } from './render.js?v=e0a21533';
 
 const TYPE_MS = 45;
 

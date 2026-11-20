@@ -15,6 +15,8 @@ const COLORS = { events: '#00e5ff', jobs: '#10b981', evals: '#7c3aed' };
 const BASE_SPEED = 110;     // px per second along an edge
 const HOVER_BOOST = 1.35;
 const SPAWN_MS = 170;
+const BURST_SPAWN_MS = 12;  // Konami burst (effects.js)
+const BURST_CAP = 180;
 
 export function initBus(data, host = document.getElementById('bus-layer')) {
   const hero = document.getElementById('hero');
@@ -101,6 +103,7 @@ function animate(host, hero, graph, legend) {
   const packets = [];
   let running = false, visible = true, onScreen = true, raf = 0, last = 0, spawnAcc = 0;
   let speedMul = 1, hover = null; // hover = target node id
+  let burstUntil = 0;
 
   function resize() {
     const r = host.getBoundingClientRect();
@@ -134,8 +137,11 @@ function animate(host, hero, graph, legend) {
     last = now;
     speedMul += ((hover ? HOVER_BOOST : 1) - speedMul) * Math.min(dt * 4, 1);
 
+    const bursting = now < burstUntil;
+    const every = bursting ? BURST_SPAWN_MS : SPAWN_MS;
+    const limit = bursting ? BURST_CAP : cap;
     spawnAcc += dt * 1000;
-    while (spawnAcc > SPAWN_MS) { spawnAcc -= SPAWN_MS; if (packets.length < cap) spawn(); }
+    while (spawnAcc > every) { spawnAcc -= every; if (packets.length < limit) spawn(); }
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -199,6 +205,9 @@ function animate(host, hero, graph, legend) {
     }, { passive: true });
     hero.addEventListener('mouseleave', () => { hover = null; });
   }
+
+  // Konami burst: flood with packets for e.detail.ms; they drain naturally after.
+  window.addEventListener('jalil:burst', (e) => { burstUntil = performance.now() + (e.detail?.ms || 3000); });
 
   setRunning();
   return { canvas, packets, graph };

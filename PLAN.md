@@ -199,3 +199,32 @@ Fix: `node scripts/sync-fallback.mjs` now also stamps `?v=<content hash>` on
 import inside `js/`. Hashes cascade through imports. **Run it after any edit
 to `css/`, `js/` or `data.js`**; `--check` fails if a version is stale.
 Sparkline SVGs also carry `width`/`height` so a CSS miss can't blow them up.
+
+## 11. Prompt 4: trace, service cards, palette, effects
+
+| Module | What it does |
+|---|---|
+| `trace.js` + `blocks.experience` | Roles as spans on a 2021 → now axis (oldest first, like a trace waterfall). Bars are `<button aria-expanded>`; the newest span starts open. Below 768px: a vertical list, newest first. Without JS, every panel is open. |
+| `cards.js` | Service-card tilt (≤2.5°) plus a glow border that tracks the cursor. Fine pointers with motion allowed only. |
+| `blocks.projects` | Status pills `● running ◐ building ✓ shipped ○ archived`; "view source" links. Placeholder links show as amber TODOs on localhost only and are never printed in production. |
+| `palette.js` | Ctrl/⌘ K. `<dialog>` with combobox and listbox (`aria-activedescendant`), Tab trapped on the input, Escape closes, focus returns to the opener. Fuzzy search: jump to sections, open GitHub/LinkedIn, copy email (toast), download CV, focus terminal. Nav chip shows ⌘K on Mac, Ctrl K elsewhere (hidden ≤768px). |
+| `effects.js` | Section titles decrypt once (real text stays in the DOM; the overlay is `aria-hidden`); scroll progress loading bar; Konami code bursts the bus for 3s (toast only under reduced motion). |
+| `toast.js` | Single polite live region. |
+| footer | `uptime: since 2021 · p99 latency: replies within 24h` (from `data.footer`). |
+
+Measured at 1440px with GPU: 60fps normally and during the Konami burst (180 packets).
+
+Dev server: `python scripts/serve.py [port]`. The default `http.server` backlog of 5
+makes Windows refuse some of the ~13 parallel module requests.
+
+### If it feels like too much, cut in this order
+
+1. **Card tilt.** Even at 2.5° it softens text while hovering; the glow border alone carries the effect.
+2. **Title decrypt.** It's the effect that means the least ("decrypting" a heading isn't a system event).
+3. **Boot overlay.** The first visit costs about 1.2s before content. The terminal intro already says "system".
+Keep: bus canvas, trace, terminal, palette, progress bar. Each one maps to something real.
+
+### New placeholders (hidden in production, amber TODO on localhost)
+
+`HEALTH_PLATFORM_REPO_URL`, `SALES_AUTOMATION_REPO_URL`, `MARIO_ASM_REPO_URL`
+(plus the open ones: `FORMSPREE_ID`, `SWAPCHECK_REPO_URL`, `STREAKER_DESC`, `STREAKER_URL`, `cv.pdf`).

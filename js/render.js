@@ -14,6 +14,8 @@ const isExternal = (href) => /^https?:\/\//.test(href);
 const linkAttrs = (href) => `href="${esc(href)}"${isExternal(href) ? ' target="_blank" rel="noopener"' : ''}`;
 const placeholderComments = (...vals) => vals.filter(isPlaceholder).map((v) => `<!-- ${v} -->`).join('');
 
+const STATUS_GLYPH = { running: '●', building: '◐', shipped: '✓', archived: '○' };
+
 const i = (n) => '\n' + '  '.repeat(n); // indentation helper for readable static HTML
 
 export const blocks = {
@@ -74,33 +76,76 @@ export const blocks = {
     return `${i(4)}<div class="skill-category">${i(5)}<div class="skill-cat-name">${esc(c.category)}</div>${i(5)}<div class="skill-tags">${tags}${i(5)}</div>${i(4)}</div>`;
   }).join('') + i(3),
 
-  experience: (d) => d.experience.map((e) => {
-    const dotStyle = e.dot && e.dot !== 'accent' ? ` style="background: var(--${e.dot}); box-shadow: 0 0 12px var(--${e.dot});"` : '';
-    return `${i(4)}<div class="exp-item">` +
-      `${i(5)}<div class="exp-dot"${dotStyle}></div>` +
-      `${i(5)}<div class="exp-header">${i(6)}<h3 class="exp-role">${esc(e.role)}</h3>${i(6)}<div class="exp-period">${esc(e.period)}</div>${i(5)}</div>` +
-      `${i(5)}<div class="exp-company"><span>${esc(e.company)}</span> · ${esc(e.place)}</div>` +
-      `${i(5)}<ul class="exp-points">${e.points.map((p) => `${i(6)}<li>${esc(p)}</li>`).join('')}${i(5)}</ul>` +
-      `${i(5)}<div class="exp-tags">${e.tags.map((t) => `${i(6)}<span class="exp-tag">${esc(t)}</span>`).join('')}${i(5)}</div>` +
-      `${i(4)}</div>`;
-  }).join('') + i(3),
+  // Experience as a distributed trace: one span per role on a shared time axis.
+  // opts.now extends the axis to today (browser); without it the axis ends at
+  // the latest span, so the static fallback is deterministic.
+  experience: (d, opts = {}) => {
+    const spans = [...d.experience].sort((a, b) => a.start.localeCompare(b.start)); // waterfall: oldest first
+    const m = (ym) => { const [y, mo] = ym.split('-').map(Number); return y * 12 + (mo - 1); };
+    const startM = Math.floor(m(spans[0].start) / 12) * 12; // Jan of the first year
+    const lastEnd = Math.max(...spans.map((e) => m(e.end) + 1));
+    const nowM = opts.now ? opts.now.getFullYear() * 12 + opts.now.getMonth() + 1 : lastEnd;
+    const endM = Math.max(lastEnd, nowM);
+    const pct = (v) => (((v - startM) / (endM - startM)) * 100).toFixed(2);
+    const dur = (e) => {
+      const n = m(e.end) - m(e.start) + 1; // inclusive months
+      const y = Math.floor(n / 12), r = n % 12;
+      return [y && `${y}y`, r && `${r}m`].filter(Boolean).join(' ');
+    };
+    const ticks = [];
+    for (let y = startM / 12; y * 12 <= endM; y++) ticks.push(`<span class="trace-tick" style="left:${pct(y * 12)}%">${y}</span>`);
+    const nowMark = opts.now ? `<span class="trace-now" style="left:${pct(nowM)}%">now</span>` : '';
 
-  projects: (d) => d.projects.map((p, n) => {
+    const rows = spans.map((e, k) => {
+      const left = +pct(m(e.start)), width = +pct(m(e.end) + 1) - left;
+      const where = width >= 26 ? 'in' : left + width < 62 ? 'right' : 'left';
+      const id = `span-${k}`;
+      const label = `${e.period} · ${dur(e)}`;
+      return `${i(5)}<li class="trace-row" style="--span-color: var(--${esc(e.dot || 'accent')})">` +
+        `${i(6)}<div class="trace-label"><span class="trace-service">${esc(e.company)}</span><h3 class="trace-op">${esc(e.role)}</h3></div>` +
+        `${i(6)}<div class="trace-track">` +
+        `${i(7)}<button type="button" class="trace-bar" data-label="${where}" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%" aria-expanded="true" aria-controls="${id}" aria-label="${esc(`${e.role} at ${e.company}, ${label}`)}">` +
+        `<span class="trace-bar-label">${esc(label)}</span></button>` +
+        `${i(6)}</div>` +
+        `${i(6)}<div class="trace-panel" id="${id}">` +
+        `${i(7)}<div class="exp-company"><span>${esc(e.company)}</span> · ${esc(e.place)} · ${esc(e.period)}</div>` +
+        `${i(7)}<ul class="exp-points">${e.points.map((p) => `${i(8)}<li>${esc(p)}</li>`).join('')}${i(7)}</ul>` +
+        `${i(7)}<div class="exp-tags">${e.tags.map((t) => `${i(8)}<span class="exp-tag">${esc(t)}</span>`).join('')}${i(7)}</div>` +
+        `${i(6)}</div>` +
+        `${i(5)}</li>`;
+    }).join('');
+
+    return `${i(4)}<div class="trace-head" aria-hidden="true">` +
+      `${i(5)}<div class="trace-head-label">service · span</div>` +
+      `${i(5)}<div class="trace-axis">${ticks.join('')}${nowMark}</div>` +
+      `${i(4)}</div>` +
+      `${i(4)}<ol class="trace-spans">${rows}${i(4)}</ol>${i(3)}`;
+  },
+
+  // Projects as service cards. Placeholder links are never printed in
+  // production; on localhost (opts.dev) they show as a visible TODO.
+  projects: (d, opts = {}) => d.projects.map((p, n) => {
     const desc = isPlaceholder(p.desc) ? p.descFallback : p.desc;
-    const links = p.links.filter((l) => !isPlaceholder(l.href));
+    const links = p.links.map((l) => {
+      if (!isPlaceholder(l.href)) return `<a ${linkAttrs(l.href)}>${esc(l.label)} →</a>`;
+      return opts.dev ? `<span class="project-todo">TODO ${esc(l.label)}: ${esc(l.href)}</span>` : '';
+    }).filter(Boolean);
     const status = p.status
-      ? `<span class="project-status" data-status="${esc(p.status)}">${esc(p.status)}</span>`
+      ? `<span class="project-status" data-status="${esc(p.status)}"><span class="status-glyph" aria-hidden="true">${STATUS_GLYPH[p.status] || '●'}</span>${esc(p.status)}</span>`
       : '';
+    const comments = placeholderComments(p.desc, ...p.links.map((l) => l.href));
     return `${i(4)}<article class="project-card${p.flagship ? ' flagship' : ''}" id="project-${esc(p.id)}">` +
-      `${placeholderComments(p.desc, ...p.links.map((l) => l.href)) ? i(5) + placeholderComments(p.desc, ...p.links.map((l) => l.href)) : ''}` +
+      (comments ? i(5) + comments : '') +
       `${i(5)}<div class="project-meta"><span class="project-num">${String(n + 1).padStart(2, '0')}${p.flagship ? ' · flagship' : ''}</span>${status}</div>` +
       `${i(5)}<h3 class="project-name">${esc(p.name)}</h3>` +
       (p.award ? `${i(5)}<div class="project-award">🏆 ${esc(p.award)}</div>` : '') +
       (desc ? `${i(5)}<p class="project-desc">${esc(desc)}</p>` : '') +
       (p.stack.length ? `${i(5)}<div class="project-stack">${p.stack.map((s) => `${i(6)}<span class="stack-tag">${esc(s)}</span>`).join('')}${i(5)}</div>` : '') +
-      (links.length ? `${i(5)}<div class="project-links">${links.map((l) => `<a ${linkAttrs(l.href)}>${esc(l.label)} →</a>`).join('')}</div>` : '') +
+      (links.length ? `${i(5)}<div class="project-links">${links.join('')}</div>` : '') +
       `${i(4)}</article>`;
   }).join('') + (d.archive.length ? archive(d) : '') + i(3),
+
+  footerStatus: (d) => esc(d.footer.status),
 
   about: (d) => d.profile.about.map((p) => `${i(5)}<p>${esc(p)}</p>`).join('') + i(4),
 
@@ -159,9 +204,10 @@ function archive(d) {
 }
 
 // Browser entry: replace every [data-render] block with fresh output.
-export function renderAll(data, root = document) {
+// opts: { dev: boolean, now: Date } (see the experience and projects blocks).
+export function renderAll(data, root = document, opts = {}) {
   root.querySelectorAll('[data-render]').forEach((el) => {
     const fn = blocks[el.dataset.render];
-    if (fn) el.innerHTML = fn(data);
+    if (fn) el.innerHTML = fn(data, opts);
   });
 }

@@ -139,6 +139,7 @@ export const data = {
       company: 'Turing',
       place: 'Remote',
       period: 'Nov 2024 – Apr 2026',
+      start: '2024-11', end: '2026-04', // trace span (from period)
       dot: 'accent',
       points: [
         'Designed large-scale LLM benchmarking pipelines to evaluate top-tier language models on programming, reasoning, and problem-solving tasks.',
@@ -153,6 +154,7 @@ export const data = {
       company: 'TechnoGenics SMC PVT LTD',
       place: 'Remote',
       period: 'Aug 2024 – Dec 2024',
+      start: '2024-08', end: '2024-12',
       dot: 'accent2',
       points: [
         'Led UI/UX improvements using Angular and TypeScript, achieving a high increase in user satisfaction for cybersecurity search and subscription features.',
@@ -167,6 +169,7 @@ export const data = {
       company: 'TechnoGenics SMC PVT LTD',
       place: 'Lahore',
       period: 'Sep 2021 – Jul 2024',
+      start: '2021-09', end: '2024-07',
       dot: 'accent3',
       points: [
         'Built a fully automated backend service using FastAPI, ElasticSearch, RabbitMQ, and REST APIs for seamless trigger-based user subscriptions.',
@@ -187,7 +190,7 @@ export const data = {
       status: 'building',
       desc: 'Agent evaluation harness that gives a SHIP / HOLD verdict when you swap the model behind an agent. Replays scenarios, scores them with LLM-as-judge plus rule checks, and compares the results against a reference config.',
       stack: ['Agent Evals', 'LLM-as-judge', 'Rule-based Scoring', 'Scenario Replay'],
-      links: [{ label: 'GitHub', href: 'SWAPCHECK_REPO_URL' }],
+      links: [{ label: 'view source', href: 'SWAPCHECK_REPO_URL' }],
     },
     {
       id: 'voice-agent',
@@ -196,7 +199,7 @@ export const data = {
       flagship: true,
       desc: 'A multi-node LangGraph system with Deepgram speech-to-text and Edge TTS, streamed over WebSockets from a FastAPI backend. Classifies caller intent, retrieves answers via RAG on ChromaDB, and runs automated booking logic.',
       stack: ['LangGraph', 'ChromaDB', 'RAG', 'Deepgram STT', 'Edge TTS', 'FastAPI', 'WebSockets'],
-      links: [{ label: 'View Architecture', href: 'https://github.com/abduljalilmemon/voice-agent' }],
+      links: [{ label: 'view source', href: 'https://github.com/abduljalilmemon/voice-agent' }],
     },
     {
       id: 'health-platform',
@@ -204,7 +207,7 @@ export const data = {
       status: 'building',
       desc: 'An ongoing microservice health platform, with each service maintained in its own repo under a shared GitHub organization. Currently building out the auth-service with FastAPI, PostgreSQL, and Redis.',
       stack: ['FastAPI', 'PostgreSQL', 'Redis', 'Microservices'],
-      links: [],
+      links: [{ label: 'view source', href: 'HEALTH_PLATFORM_REPO_URL' }],
     },
     {
       id: 'streaker',
@@ -215,7 +218,7 @@ export const data = {
       descFallback: 'Built with a small team at Monad Blitz Berlin (Sep 2026); working demo shipped within the event deadline.',
       award: '1st Place · Monad Blitz Berlin',
       stack: [],
-      links: [{ label: 'GitHub', href: 'STREAKER_URL' }],
+      links: [{ label: 'view source', href: 'STREAKER_URL' }],
     },
     {
       id: 'sales-automation',
@@ -223,7 +226,7 @@ export const data = {
       status: null,
       desc: 'Built complex n8n workflows for multi-source sales reporting. Integrated Gmail, Discord, and custom API error monitoring to replace manual data processing.',
       stack: ['n8n', 'Data Integration', 'Error Recovery'],
-      links: [],
+      links: [{ label: 'view source', href: 'SALES_AUTOMATION_REPO_URL' }],
     },
     {
       id: 'mario-asm',
@@ -231,7 +234,7 @@ export const data = {
       status: 'archived',
       desc: 'A from-scratch Super Mario implementation written in Assembly. Managed low-level memory, sprite rendering, and hardware-level collision logic without high-level abstractions.',
       stack: ['Assembly (x86)', 'Low-Level Systems'],
-      links: [],
+      links: [{ label: 'view source', href: 'MARIO_ASM_REPO_URL' }],
     },
   ],
 
@@ -267,6 +270,10 @@ export const data = {
     { name: 'n8n Course Level 1', issuer: 'n8n.io', year: '2026' },
     { name: 'n8n Course Level 2', issuer: 'n8n.io', year: '2026' },
   ],
+
+  footer: {
+    status: 'uptime: since 2021 · p99 latency: replies within 24h',
+  },
 
   links: {
     email: 'abduljaleelmemon3@gmail.com',
