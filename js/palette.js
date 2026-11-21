@@ -3,6 +3,7 @@
 // active option with aria-activedescendant. Tab is trapped inside, Escape
 // closes, and focus returns to whatever opened it.
 
+import { cvAvailable } from './cv.js?v=51a8bcc1';
 import { emailOf } from './render.js?v=89b655e1';
 import { toast } from './toast.js?v=e12d8853';
 
@@ -30,7 +31,7 @@ export function initPalette(data) {
     { label: 'Open GitHub', hint: L.github.handle, group: 'link', run: () => window.open(L.github.url, '_blank', 'noopener') },
     { label: 'Open LinkedIn', hint: L.linkedin.handle, group: 'link', run: () => window.open(L.linkedin.url, '_blank', 'noopener') },
     { label: 'Copy email', hint: emailOf(data), group: 'action', keepFocus: true, run: () => copy(emailOf(data)) },
-    { label: 'Download CV', hint: data.profile.cv, group: 'action', run: () => download(data.profile.cv) },
+    { label: 'Download CV', hint: data.profile.cv, group: 'action', cv: true, run: () => download(data.profile.cv) },
     {
       label: 'Focus terminal', hint: 'profile.json', group: 'action',
       run: () => {
@@ -40,6 +41,9 @@ export function initPalette(data) {
       },
     },
   ];
+
+  // Drop "Download CV" while cv.pdf isn't uploaded (it would save the 404 page).
+  cvAvailable(data.profile.cv).then((ok) => { if (!ok) actions.splice(actions.findIndex((a) => a.cv), 1); });
 
   /* ---------- DOM ---------- */
   const dlg = document.createElement('dialog');

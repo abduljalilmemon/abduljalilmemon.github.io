@@ -3,6 +3,7 @@
 // commands. Real <input> with a label; command output goes to an
 // aria-live="polite" region. All text comes from data.js.
 
+import { cvAvailable } from './cv.js?v=51a8bcc1';
 import { blocks, emailOf } from './render.js?v=89b655e1';
 
 const TYPE_MS = 45;
@@ -104,8 +105,13 @@ export function initTerminal(data, ready = Promise.resolve()) {
       line({ cls: 't-key', text: pad('github', 10) }, { href: L.github.url, text: L.github.handle }),
     ],
     resume: () => {
-      window.open(P.cv, '_blank', 'noopener');
-      return [line({ cls: 't-comment', text: `opening ${P.cv} …` })];
+      // a placeholder line, filled in once we know whether the file exists
+      const row = line({ cls: 't-comment', text: `checking ${P.cv} …` });
+      cvAvailable(P.cv).then((ok) => {
+        if (ok) { window.open(P.cv, '_blank', 'noopener'); row.textContent = `opening ${P.cv} …`; }
+        else { row.textContent = ''; row.append(Object.assign(document.createElement('span'), { className: 't-err', textContent: `${P.cv}: not uploaded yet` }), Object.assign(document.createElement('span'), { className: 't-comment', textContent: " — try 'contact'" })); }
+      });
+      return [row];
     },
     hire: () => {
       const target = document.getElementById('contact');

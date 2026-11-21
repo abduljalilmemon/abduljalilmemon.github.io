@@ -80,8 +80,8 @@ Then run `node scripts/sync-fallback.mjs`.
    ```html
    <form … action="https://formspree.io/f/abcdwxyz" method="POST">
    ```
-3. Commit and push. Until the ID is set, the form shows "not connected yet" with an
-   email fallback. It never shows a false success.
+3. Commit and push. Until the ID is set, submitting opens the visitor's email app
+   with their name and message pre-filled (a `mailto:`). It never claims a message was sent.
 
 ## Placeholders
 
@@ -102,9 +102,10 @@ grep -rnE "\b[A-Z][A-Z0-9]*(_[A-Z0-9]+)+\b" index.html js/data.js
 | `SALES_AUTOMATION_REPO_URL` | `js/data.js`    | n8n project URL (or remove the link)     |
 | `MARIO_ASM_REPO_URL`        | `js/data.js`    | Assembly Mario repo URL (or remove)      |
 
-Also missing: **`cv.pdf`** at the repository root. The hero button, the terminal's
-`resume` command and the palette all link to `/cv.pdf`. Use that exact filename,
-with no spaces or brackets.
+Also missing: **`cv.pdf`** at the repository root. Use that exact filename, with no
+spaces or brackets. Until it exists, the "Download CV" button is hidden, the terminal's `resume`
+command says it isn't uploaded, and the palette leaves it out. After adding the file, run
+`node scripts/sync-fallback.mjs` so the static page shows the button too.
 
 ## Images and icons
 
@@ -134,6 +135,7 @@ js/cards.js           service-card tilt and glow (mouse only)
 js/palette.js         Ctrl/⌘ K command palette
 js/effects.js         title decrypt, scroll progress, Konami burst
 js/toast.js           small live-region toast
+js/cv.js              checks that cv.pdf exists before offering it
 js/notfound.js        404 terminal
 fonts/                self-hosted latin subsets (Syne, DM Sans, Space Mono)
 scripts/              dev tools: serve.py, sync-fallback.mjs, make-images.mjs

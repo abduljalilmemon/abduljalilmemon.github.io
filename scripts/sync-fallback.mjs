@@ -13,7 +13,7 @@
 //
 // It also lists any UPPER_SNAKE placeholders still present in data.js.
 
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -88,6 +88,11 @@ const staleJs = jsFiles.filter((f) => jsOut[f] !== jsSrc[f]);
 const broken = jsFiles.filter((f) => spawnSync(process.execPath, ['--input-type=module', '--check'], { input: jsOut[f] }).status !== 0);
 if (broken.length) { console.error(`syntax error in: ${broken.join(', ')} (run: node --check js/<file>)`); process.exit(1); }
 
+// CV button: only offered when the file is really there (else it downloads the 404 page).
+const cvPath = data.profile.cv.replace(/^\//, '');
+const hasCv = existsSync(join(root, cvPath));
+out = out.replace(/(<a [^>]*\bdata-cv\b)( hidden)?(?=[ >])/g, (_, a) => (hasCv ? a : `${a} hidden`));
+
 const placeholders = new Set();
 (function walk(v) {
   if (isPlaceholder(v)) placeholders.add(v);
@@ -108,3 +113,4 @@ if (process.argv.includes('--check')) {
   console.log(`versions: ${Object.entries(version).map(([f, v]) => `${f}@${v}`).join(' ')}`);
 }
 if (placeholders.size) console.log(`placeholders still open: ${[...placeholders].join(', ')}`);
+if (!hasCv) console.log(`missing file: ${cvPath} (the Download CV button stays hidden until you add it)`);

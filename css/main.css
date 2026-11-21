@@ -24,6 +24,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; } /* beats display rules like .btn-ghost's inline-flex */
 
 html { scroll-behavior: smooth; }
 
