@@ -3,7 +3,7 @@
 // commands. Real <input> with a label; command output goes to an
 // aria-live="polite" region. All text comes from data.js.
 
-import { blocks } from './render.js?v=e0a21533';
+import { blocks, emailOf } from './render.js?v=89b655e1';
 
 const TYPE_MS = 45;
 
@@ -85,7 +85,7 @@ export function initTerminal(data, ready = Promise.resolve()) {
   };
 
   /* ---------- commands ---------- */
-  const P = data.profile, L = data.links;
+  const P = data.profile, L = data.links, email = emailOf(data);
   const commands = {
     help: () => T.commands.map(([c, d]) => line({ cls: 't-key', text: pad(c, 12) }, { cls: 't-comment', text: d })),
     whoami: () => [
@@ -99,7 +99,7 @@ export function initTerminal(data, ready = Promise.resolve()) {
     projects: () => data.projects.map((p) => line({ cls: `t-status t-status-${p.status || 'none'}`, text: pad(`[${p.status || '-'}]`, 11) }, p.name)),
     awards: () => data.awards.map((a) => line({ cls: 't-val', text: `🏆 ${a.title}` }, { cls: 't-comment', text: ` · ${a.org} · ${a.place} · ${a.date}` })),
     contact: () => [
-      line({ cls: 't-key', text: pad('email', 10) }, { href: `mailto:${L.email}`, text: L.email }),
+      line({ cls: 't-key', text: pad('email', 10) }, { href: `mailto:${email}`, text: email }),
       line({ cls: 't-key', text: pad('linkedin', 10) }, { href: L.linkedin.url, text: L.linkedin.handle }),
       line({ cls: 't-key', text: pad('github', 10) }, { href: L.github.url, text: L.github.handle }),
     ],
@@ -116,7 +116,7 @@ export function initTerminal(data, ready = Promise.resolve()) {
     'sudo hire jalil': () => [
       line({ cls: 't-comment', text: '[sudo] password for recruiter: ********' }),
       line({ cls: 't-arr', text: '✓ permission granted.' }, " offer queued on topic 'offers', partition 0."),
-      line('  consumer jalil.sys is listening at ', { href: `mailto:${L.email}`, text: L.email }),
+      line('  consumer jalil.sys is listening at ', { href: `mailto:${email}`, text: email }),
     ],
     'cat profile.json': () => profileRows(),
     clear: () => { out.innerHTML = ''; return []; },
@@ -176,7 +176,7 @@ export function initTerminal(data, ready = Promise.resolve()) {
   };
   ready.then(() => {
     if (!motionOK) return finishIntro();
-    typed.innerHTML = '<span class="t-prompt">$</span> <span class="t-cmd"></span><span class="cursor"></span>';
+    typed.innerHTML = '<span class="t-prompt">$</span> <span class="t-cmd"></span><span class="cursor" aria-hidden="true"></span>';
     const cmdEl = typed.querySelector('.t-cmd');
     let k = 0;
     const tick = () => {

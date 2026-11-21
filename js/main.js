@@ -1,11 +1,11 @@
 // jalil.sys: page behaviour. Loaded as an ES module (deferred by default).
-import { data } from './data.js?v=850e69d9';
-import { renderAll } from './render.js?v=e0a21533';
+import { data } from './data.js?v=7155e746';
+import { renderAll, emailOf } from './render.js?v=89b655e1';
 import { initBoot } from './boot.js?v=5eea878a';
-import { initTerminal } from './terminal.js?v=b40a3412';
+import { initTerminal } from './terminal.js?v=a7984170';
 import { initTrace } from './trace.js?v=8c662fe2';
 import { initCards } from './cards.js?v=91bd5b31';
-import { initPalette } from './palette.js?v=a55b138b';
+import { initPalette } from './palette.js?v=aefff2c2';
 import { initEffects } from './effects.js?v=3bf109ab';
 import { initMetrics } from './metrics.js?v=bff14201';
 
@@ -98,7 +98,7 @@ function initContactForm() {
   const status = document.getElementById('form-status');
   if (!form || !status) return;
   const btn = form.querySelector('button[type="submit"]');
-  const fallback = form.dataset.fallbackEmail;
+  const fallback = emailOf(data);
   const mailto = fallback ? ` Please email <a href="mailto:${fallback}">${fallback}</a> instead.` : '';
 
   const show = (state, html) => { status.dataset.state = state; status.innerHTML = html; };
@@ -142,7 +142,9 @@ function initContactForm() {
 // Render content from data.js first so reveal/nav observers see the final DOM.
 // If rendering throws, the static fallback in index.html stays in place.
 const dev = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
-try { renderAll(data, document, { dev, now: new Date() }); } catch (err) { console.error('render failed, keeping static fallback', err); }
+try { renderAll(data, document, { dev, now: new Date(), reveal: true }); } catch (err) { console.error('render failed, keeping static fallback', err); }
+// Static (non-rendered) email links, e.g. the nav CTA: assemble the address now.
+document.querySelectorAll('[data-email-link]').forEach((a) => { a.href = `mailto:${emailOf(data)}`; });
 
 // Each hero piece is isolated: one failing never takes the rest down.
 const safe = (name, fn) => { try { return fn(); } catch (err) { console.error(`${name} failed`, err); } };
@@ -150,15 +152,38 @@ const safe = (name, fn) => { try { return fn(); } catch (err) { console.error(`$
 const booted = safe('boot', () => initBoot(data)) || Promise.resolve();
 safe('terminal', () => initTerminal(data, booted));
 safe('metrics', () => initMetrics(booted));
-safe('trace', () => initTrace());
-safe('cards', () => initCards());
-safe('palette', () => initPalette(data));
-safe('effects', () => initEffects());
+// Below-the-fold and on-demand features: set up when the browser is idle,
+// so the first load task stays short (TBT).
+const whenIdle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 300));
+whenIdle(() => {
+  safe('trace', () => initTrace());
+  safe('palette', () => initPalette(data));
+});
+whenIdle(() => {
+  safe('cards', () => initCards());
+  safe('effects', () => initEffects());
+  reanchor();
+});
+
+// Deep links (/#projects): the browser scrolls to the fragment early, then the
+// trace collapses and fonts swap above it, pushing the target away. Re-scroll
+// once things settle, unless the visitor has already started moving.
+let userMoved = false;
+['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((t) =>
+  window.addEventListener(t, () => { userMoved = true; }, { once: true, passive: true, capture: true }));
+function reanchor() {
+  if (userMoved || location.hash.length < 2) return;
+  let target = null;
+  try { target = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch { /* bad escape */ }
+  target?.scrollIntoView({ block: 'start', behavior: 'instant' });
+}
+document.fonts?.ready.then(() => requestAnimationFrame(reanchor));
+window.addEventListener('load', () => requestAnimationFrame(reanchor), { once: true });
 
 // Bus canvas: loaded and started after first paint, when the browser is idle.
 const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
 requestAnimationFrame(() => idle(() => {
-  import('./bus-canvas.js?v=e72913eb')
+  import('./bus-canvas.js?v=f813c206')
     .then(({ initBus }) => initBus(data))
     .catch((err) => console.error('bus canvas failed', err));
 }, { timeout: 1000 }));

@@ -39,7 +39,7 @@ export const data = {
       { icon: '📍', label: 'Location', value: 'Cottbus, Germany' },
       { icon: '💼', label: 'Last Role', value: 'Python Developer @ Turing' },
       { icon: '🎓', label: 'Education', value: 'M.Sc. AI · BTU Cottbus-Senftenberg' },
-      { icon: '✉️', label: 'Email', value: 'abduljaleelmemon3@gmail.com' },
+      { icon: '✉️', label: 'Email', email: true }, // value assembled at runtime (see links.email)
     ],
   },
 
@@ -271,12 +271,24 @@ export const data = {
     { name: 'n8n Course Level 2', issuer: 'n8n.io', year: '2026' },
   ],
 
+  // SEO / JSON-LD (index.html <head>). Facts mirror the content above.
+  seo: {
+    url: 'https://abduljalilmemon.github.io/',
+    locality: 'Cottbus',
+    country: 'DE',
+    alumniOf: { name: 'FAST — National University of Computer & Emerging Sciences', alternateName: 'FAST-NUCES' },
+    affiliation: { name: 'Brandenburg University of Technology Cottbus-Senftenberg', alternateName: 'BTU Cottbus-Senftenberg' },
+  },
+
   footer: {
     status: 'uptime: since 2021 · p99 latency: replies within 24h',
   },
 
   links: {
-    email: 'abduljaleelmemon3@gmail.com',
+    // Stored in parts so the address never appears whole in the markup or source.
+    // js/render.js emailOf() joins it in the browser; the no-JS fallback shows
+    // 'user [at] domain [dot] tld'.
+    email: { user: 'abduljaleelmemon3', domain: 'gmail.com' },
     linkedin: { handle: 'abdul-jalil-memon', url: 'https://linkedin.com/in/abdul-jalil-memon' },
     github: { handle: 'abduljalilmemon', url: 'https://github.com/abduljalilmemon' },
     githubRepos: 'https://github.com/abduljalilmemon?tab=repositories',

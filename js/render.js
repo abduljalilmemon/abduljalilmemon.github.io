@@ -10,6 +10,14 @@ const esc = (s) => String(s)
 // UPPER_SNAKE values are unfilled placeholders and must never reach the page.
 export const isPlaceholder = (v) => typeof v === 'string' && /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)+$/.test(v);
 
+// Email is stored split (data.links.email). opts.reveal (browser) prints the
+// real address and a mailto:; the static fallback gets a readable, scraper-
+// resistant form and links to #contact instead.
+export const emailOf = (d) => `${d.links.email.user}@${d.links.email.domain}`;
+const emailText = (d, opts) => (opts.reveal ? emailOf(d)
+  : `${d.links.email.user} [at] ${d.links.email.domain.replace(/\./g, ' [dot] ')}`);
+const emailHref = (d, opts) => (opts.reveal ? `mailto:${emailOf(d)}` : '#contact');
+
 const isExternal = (href) => /^https?:\/\//.test(href);
 const linkAttrs = (href) => `href="${esc(href)}"${isExternal(href) ? ' target="_blank" rel="noopener"' : ''}`;
 const placeholderComments = (...vals) => vals.filter(isPlaceholder).map((v) => `<!-- ${v} -->`).join('');
@@ -27,7 +35,9 @@ export const blocks = {
     const unit = m.unit ? `<span class="metric-unit">${esc(m.unit)}</span>` : '';
     const label = esc(m.label) + (m.detail ? ` <span class="metric-detail">· ${esc(m.detail)}</span>` : '');
     return `${i(6)}<div class="metric-tile" data-tone="${esc(m.tone)}">` +
-      `${i(7)}<div class="metric-value"><span class="metric-num" data-count="${m.value}">${m.value}</span>${esc(m.suffix)}${unit}</div>` +
+      // visible value is aria-hidden (it counts up); screen readers get the final value once
+      `${i(7)}<div class="metric-value" aria-hidden="true"><span class="metric-num" data-count="${m.value}">${m.value}</span>${esc(m.suffix)}${unit}</div>` +
+      `<span class="sr-only">${esc(`${m.value}${m.suffix}${m.unit ? ` ${m.unit}` : ''}`)}</span>` +
       `${i(7)}${sparkline(m)}` +
       `${i(7)}<div class="metric-label">${label}</div>` +
       `${i(6)}</div>`;
@@ -54,7 +64,7 @@ export const blocks = {
         lines.push(`<div>${key(k)}: ${str(v)}${comma}</div>`);
       }
     });
-    lines.push('<div>&nbsp;</div>', '<div><span class="t-prompt">$</span> <span class="cursor"></span></div>');
+    lines.push('<div>&nbsp;</div>', '<div><span class="t-prompt">$</span> <span class="cursor" aria-hidden="true"></span></div>');
     return lines.map((l) => i(7) + l).join('') + i(6);
   },
 
@@ -145,12 +155,32 @@ export const blocks = {
       `${i(4)}</article>`;
   }).join('') + (d.archive.length ? archive(d) : '') + i(3),
 
+  // JSON-LD Person. Email deliberately omitted (scrapers read structured data).
+  jsonld: (d) => {
+    const S = d.seo, L = d.links;
+    const org = (o) => ({ '@type': 'CollegeOrUniversity', name: o.name, alternateName: o.alternateName });
+    const json = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: d.profile.name,
+      jobTitle: d.profile.role,
+      url: S.url,
+      image: `${S.url}og.png`,
+      address: { '@type': 'PostalAddress', addressLocality: S.locality, addressCountry: S.country },
+      sameAs: [L.github.url, L.linkedin.url],
+      alumniOf: org(S.alumniOf),
+      affiliation: org(S.affiliation),
+      knowsAbout: ['Python', 'Distributed Systems', 'LLM Evaluation', 'Search Infrastructure'],
+    }, null, 2);
+    return `\n${json.replace(/</g, '\\u003c').replace(/^/gm, '  ')}\n  `;
+  },
+
   footerStatus: (d) => esc(d.footer.status),
 
   about: (d) => d.profile.about.map((p) => `${i(5)}<p>${esc(p)}</p>`).join('') + i(4),
 
-  highlights: (d) => d.profile.highlights.map((h) =>
-    `${i(6)}<div class="highlight-row">${i(7)}<div class="hl-icon" aria-hidden="true">${esc(h.icon)}</div>${i(7)}<div>${i(8)}<div class="hl-label">${esc(h.label)}</div>${i(8)}<div class="hl-val">${esc(h.value)}</div>${i(7)}</div>${i(6)}</div>`,
+  highlights: (d, opts = {}) => d.profile.highlights.map((h) =>
+    `${i(6)}<div class="highlight-row">${i(7)}<div class="hl-icon" aria-hidden="true">${esc(h.icon)}</div>${i(7)}<div>${i(8)}<div class="hl-label">${esc(h.label)}</div>${i(8)}<div class="hl-val">${esc(h.email ? emailText(d, opts) : h.value)}</div>${i(7)}</div>${i(6)}</div>`,
   ).join('') + i(5),
 
   education: (d) => d.education.map((e) =>
@@ -161,18 +191,18 @@ export const blocks = {
     `${i(6)}<div class="cert-item">${i(7)}<div class="cert-icon" aria-hidden="true">🏅</div>${i(7)}<div>${i(8)}<div class="cert-name">${esc(c.name)}</div>${i(8)}<div class="cert-issuer">${esc(c.issuer)} · ${esc(c.year)}</div>${i(7)}</div>${i(6)}</div>`,
   ).join('') + i(5),
 
-  contactLinks: (d) => {
+  contactLinks: (d, opts = {}) => {
     const L = d.links;
     const row = (href, icon, label, val, iconStyle = '') =>
       `${i(6)}<a ${linkAttrs(href)} class="contact-link">${i(7)}<div class="cl-icon"${iconStyle} aria-hidden="true">${icon}</div>${i(7)}<div>${i(8)}<div class="cl-label">${label}</div>${i(8)}<div class="cl-val">${esc(val)}</div>${i(7)}</div>${i(7)}<div class="cl-arrow" aria-hidden="true">→</div>${i(6)}</a>`;
-    return row(`mailto:${L.email}`, '✉', 'Email', L.email) +
+    return row(emailHref(d, opts), '✉', 'Email', emailText(d, opts)) +
       row(L.linkedin.url, 'in', 'LinkedIn', L.linkedin.handle) +
       row(L.github.url, 'gh', 'GitHub', L.github.handle, ' style="font-family: var(--mono); font-size: 0.85rem;"') + i(5);
   },
 
-  footerLinks: (d) => {
+  footerLinks: (d, opts = {}) => {
     const L = d.links;
-    return `${i(5)}<a ${linkAttrs(L.github.url)}>GitHub</a>${i(5)}<a ${linkAttrs(L.linkedin.url)}>LinkedIn</a>${i(5)}<a href="mailto:${esc(L.email)}">Email</a>${i(4)}`;
+    return `${i(5)}<a ${linkAttrs(L.github.url)}>GitHub</a>${i(5)}<a ${linkAttrs(L.linkedin.url)}>LinkedIn</a>${i(5)}<a href="${esc(emailHref(d, opts))}">Email</a>${i(4)}`;
   },
 };
 
@@ -204,10 +234,26 @@ function archive(d) {
 }
 
 // Browser entry: replace every [data-render] block with fresh output.
-// opts: { dev: boolean, now: Date } (see the experience and projects blocks).
+// Small, fast string hash (FNV-1a, 32-bit) shared with scripts/sync-fallback.mjs.
+export function hash(str) {
+  let h = 0x811c9dc5;
+  for (let k = 0; k < str.length; k++) { h ^= str.charCodeAt(k); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(36);
+}
+
+// opts: { dev, now, reveal } (see the experience, projects and email blocks).
+// The sync script stamps data-render-hash = hash(static output) on each block.
+// A block is only rewritten when its HTML would actually change: the static
+// fallback is stale (data.js edited without syncing), or runtime opts alter it
+// (today's date, localhost TODOs, the assembled email). Rewriting identical
+// blocks would invalidate style and layout for the whole page on load.
 export function renderAll(data, root = document, opts = {}) {
   root.querySelectorAll('[data-render]').forEach((el) => {
     const fn = blocks[el.dataset.render];
-    if (fn) el.innerHTML = fn(data, opts);
+    if (!fn || el.tagName === 'SCRIPT') return;
+    const staticHtml = fn(data);
+    const html = fn(data, opts);
+    if (html === staticHtml && el.dataset.renderHash === hash(staticHtml)) return;
+    el.innerHTML = html;
   });
 }

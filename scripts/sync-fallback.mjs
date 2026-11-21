@@ -15,10 +15,11 @@
 
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { data } from '../js/data.js';
-import { blocks, isPlaceholder } from '../js/render.js';
+import { blocks, isPlaceholder, hash } from '../js/render.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const file = join(root, 'index.html');
@@ -46,11 +47,14 @@ const keys = [...src.matchAll(/data-render="([a-zA-Z]+)"/g)].map((m) => m[1]);
 let out = src;
 for (const key of keys) {
   if (!blocks[key]) throw new Error(`no render block named "${key}"`);
-  out = fill(out, key, blocks[key](data));
+  const html = blocks[key](data);
+  out = fill(out, key, html);
+  // stamp the hash so the browser can skip re-rendering an up-to-date block
+  out = out.replace(new RegExp(`(\\bdata-render="${key}")(?: data-render-hash="[^"]*")?`), `$1 data-render-hash="${hash(html)}"`);
 }
 
 /* ---------- cache-busting versions ---------- */
-const hash = (text) => createHash('sha256').update(text).digest('hex').slice(0, 8);
+const contentHash = (text) => createHash('sha256').update(text).digest('hex').slice(0, 8);
 const IMPORT_RE = /((?:from\s+|import\s*\(\s*)['"])(\.\/[\w-]+\.js)(?:\?v=[0-9a-f]+)?(['"])/g;
 const jsDir = join(root, 'js');
 const jsFiles = readdirSync(jsDir).filter((f) => f.endsWith('.js'));
@@ -63,17 +67,26 @@ const visit = (f, stack = []) => {
   if (stack.includes(f)) throw new Error(`import cycle: ${[...stack, f].join(' → ')}`);
   deps[f].forEach((d) => visit(d, [...stack, f]));
   jsOut[f] = jsSrc[f].replace(IMPORT_RE, (_, a, spec, b) => `${a}${spec}?v=${version[spec.slice(2)]}${b}`);
-  return (version[f] = hash(jsOut[f]));
+  return (version[f] = contentHash(jsOut[f]));
 };
 jsFiles.forEach((f) => visit(f));
-version['main.css'] = hash(readFileSync(join(root, 'css', 'main.css'), 'utf8'));
-out = out
-  .replace(/(href|src)="(css\/main\.css|js\/[\w-]+\.js)(?:\?v=[0-9a-f]+)?"/g, (_, attr, path) => {
+version['main.css'] = contentHash(readFileSync(join(root, 'css', 'main.css'), 'utf8'));
+const stamp = (html) => html
+  .replace(/(href|src)="(\/?)(css\/main\.css|js\/[\w-]+\.js)(?:\?v=[0-9a-f]+)?"/g, (_, attr, slash, path) => {
     const v = version[path.split('/').pop()];
     if (!v) throw new Error(`no version for ${path}`);
-    return `${attr}="${path}?v=${v}"`;
+    return `${attr}="${slash}${path}?v=${v}"`;
   });
+out = stamp(out);
+// 404.html uses root-absolute paths (served for any missing URL); stamp it too.
+const nfFile = join(root, '404.html');
+const nfSrc = readFileSync(nfFile, 'utf8');
+const nfOut = stamp(nfSrc);
 const staleJs = jsFiles.filter((f) => jsOut[f] !== jsSrc[f]);
+
+// Syntax-check every module (a broken main.js silently drops the whole page to its no-JS fallback).
+const broken = jsFiles.filter((f) => spawnSync(process.execPath, ['--input-type=module', '--check'], { input: jsOut[f] }).status !== 0);
+if (broken.length) { console.error(`syntax error in: ${broken.join(', ')} (run: node --check js/<file>)`); process.exit(1); }
 
 const placeholders = new Set();
 (function walk(v) {
@@ -82,13 +95,14 @@ const placeholders = new Set();
 })(data);
 
 if (process.argv.includes('--check')) {
-  if (out !== src || staleJs.length) {
-    console.error(`out of date (${[out !== src && 'index.html', ...staleJs].filter(Boolean).join(', ')}): run node scripts/sync-fallback.mjs`);
+  if (out !== src || nfOut !== nfSrc || staleJs.length) {
+    console.error(`out of date (${[out !== src && 'index.html', nfOut !== nfSrc && '404.html', ...staleJs].filter(Boolean).join(', ')}): run node scripts/sync-fallback.mjs`);
     process.exit(1);
   }
   console.log(`fallback and asset versions in sync (${keys.length} blocks)`);
 } else {
   writeFileSync(file, out);
+  if (nfOut !== nfSrc) writeFileSync(nfFile, nfOut);
   staleJs.forEach((f) => writeFileSync(join(jsDir, f), jsOut[f]));
   console.log(`synced ${keys.length} blocks: ${keys.join(', ')}`);
   console.log(`versions: ${Object.entries(version).map(([f, v]) => `${f}@${v}`).join(' ')}`);

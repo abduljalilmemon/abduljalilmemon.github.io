@@ -3,6 +3,7 @@
 // active option with aria-activedescendant. Tab is trapped inside, Escape
 // closes, and focus returns to whatever opened it.
 
+import { emailOf } from './render.js?v=89b655e1';
 import { toast } from './toast.js?v=e12d8853';
 
 const isMac = /Mac|iPhone|iPad/.test(navigator.userAgentData?.platform || navigator.platform || '');
@@ -28,7 +29,7 @@ export function initPalette(data) {
     ...sections,
     { label: 'Open GitHub', hint: L.github.handle, group: 'link', run: () => window.open(L.github.url, '_blank', 'noopener') },
     { label: 'Open LinkedIn', hint: L.linkedin.handle, group: 'link', run: () => window.open(L.linkedin.url, '_blank', 'noopener') },
-    { label: 'Copy email', hint: L.email, group: 'action', keepFocus: true, run: () => copy(L.email) },
+    { label: 'Copy email', hint: emailOf(data), group: 'action', keepFocus: true, run: () => copy(emailOf(data)) },
     { label: 'Download CV', hint: data.profile.cv, group: 'action', run: () => download(data.profile.cv) },
     {
       label: 'Focus terminal', hint: 'profile.json', group: 'action',

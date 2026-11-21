@@ -228,3 +228,35 @@ Keep: bus canvas, trace, terminal, palette, progress bar. Each one maps to somet
 
 `HEALTH_PLATFORM_REPO_URL`, `SALES_AUTOMATION_REPO_URL`, `MARIO_ASM_REPO_URL`
 (plus the open ones: `FORMSPREE_ID`, `SWAPCHECK_REPO_URL`, `STREAKER_DESC`, `STREAKER_URL`, `cv.pdf`).
+
+## 12. Prompt 5: accessibility, SEO, 404, performance, README
+
+**Accessibility**: one `h1`; `header`/`main`/`footer`; skip link; 2px `--accent` focus rings.
+Contrast: `--muted` changed from `#6b6b8a` (3.3–3.9:1) to `#8b8ba8` (≥ 5.1:1); new `--accent2-text #a78bfa`
+for violet text (`#7c3aed` is 3.2:1 and stays for fills and borders); `--dim` no longer used for text.
+Metric numbers are `aria-hidden` with `sr-only` final values. Verified: keyboard-only walkthrough with real
+key events (skip link, terminal, palette, trace), reduced-motion pass, no-JS pass.
+
+**SEO**: title, description, canonical, OG and Twitter tags, `og.png` (scripts/make-images.mjs),
+JSON-LD `Person` generated from data.js (no email), favicon set, `site.webmanifest`, `robots.txt`, `sitemap.xml`.
+
+**Privacy**: phone removed (answer from §5). Email stored split in data.js and assembled in the browser;
+the no-JS fallback reads `user [at] gmail [dot] com` and links to #contact.
+
+**Performance changes**
+- Self-hosted fonts, latin subset, only the weights in use; Syne preloaded; `font-display: swap`.
+- `renderAll` skips blocks whose static HTML is current (hash stamped by the sync script).
+- Palette, trace, cards and effects set up on idle; terminal body uses `contain: strict`.
+- Hero name no longer starts at opacity 0 (it is now the LCP element).
+- Phones: terminal below the name (fixes the §9 trade-off); static bus frame under 768px.
+- `content-visibility: auto` on below-the-fold sections; deep links re-anchored after setup.
+- Images: the page has no `<img>` elements, so there was nothing to lazy-load or convert to WebP.
+  `img/profile-img.jpg` is unused.
+
+**Lighthouse mobile (local, gzip via serve.py)**: Accessibility 100, Best Practices 100, SEO 100 in every run.
+Performance 72 / 72 / 95 over three final runs. TBT ranged from 150 to 1,120 ms with CPU load
+from other apps around 55%. A calibration page (plain HTML, 1,200 elements) needed 690 ms of throttled
+layout on this machine, about 10× a typical laptop. Re-check with PageSpeed Insights after deploying.
+
+Known: without JS, a deep link such as `/#contact` can land a little early (the late font swap shifts content).
+Clicking "Contact" in the nav overshoots by about 65px because it is the last section.

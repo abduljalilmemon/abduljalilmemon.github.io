@@ -2,8 +2,8 @@
 // packets flowing producer → brokers → index → judge. Packet colour = traffic
 // type: events (cyan), jobs (green), evals (violet).
 //
-// - rAF loop, devicePixelRatio-aware (capped at 2), at most 60 packets
-//   (24 on narrow screens).
+// - rAF loop, devicePixelRatio-aware (capped at 2), at most 60 packets.
+// - Under 768px and under reduced motion: a static SVG frame instead.
 // - Static layer (edges, nodes, labels) is cached offscreen; each frame only
 //   blits it and draws packet sprites, so a frame costs well under 1ms.
 // - Pauses when the tab is hidden or the hero is off-screen.
@@ -22,8 +22,12 @@ export function initBus(data, host = document.getElementById('bus-layer')) {
   const hero = document.getElementById('hero');
   if (!host || !hero) return;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Phones get the static frame too: the stacked hero makes the canvas huge
+  // (~800x3000 device px at 60fps) while the traffic is mostly hidden behind
+  // full-width text, so animating it there only costs battery and main thread.
+  const narrow = window.matchMedia('(max-width: 767px)').matches;
   const graph = buildGraph(data.bus);
-  if (reduced) return staticFrame(host, graph, data.bus.legend);
+  if (reduced || narrow) return staticFrame(host, graph, data.bus.legend);
   return animate(host, hero, graph, data.bus.legend);
 }
 
