@@ -96,6 +96,7 @@ grep -rnE "\b[A-Z][A-Z0-9]*(_[A-Z0-9]+)+\b" index.html js/data.js
 |-----------------------------|-----------------|-----------------------------------------|
 | `FORMSPREE_ID`              | `index.html`    | Formspree form ID                        |
 | `SWAPCHECK_REPO_URL`        | `js/data.js`    | SwapCheck repository URL                 |
+| `FIRECHRONOS_REPO_URL`      | `js/data.js`    | FireChronos repo URL (or remove the link)|
 | `STREAKER_DESC`             | `js/data.js`    | One-line Streaker description            |
 | `STREAKER_URL`              | `js/data.js`    | Streaker repository or demo URL          |
 | `HEALTH_PLATFORM_REPO_URL`  | `js/data.js`    | Health platform GitHub org or repo URL   |

@@ -800,6 +800,7 @@ footer {
   color: var(--accent);
   line-height: 1;
   flex-shrink: 0;
+  width: 6.5rem; /* fixed column so every award's text lines up */
 }
 .award-title { font-family: var(--display); font-size: 1.05rem; font-weight: 700; }
 .award-meta { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2-text); margin: 0.2rem 0 0.4rem; }
@@ -880,12 +881,10 @@ footer {
 
 @media (min-width: 769px) {
   .projects-grid { grid-template-columns: repeat(2, 1fr); }
-  .project-archive { grid-column: 1 / -1; }
 }
 @media (min-width: 1024px) {
   .projects-grid { grid-template-columns: repeat(3, 1fr); }
   .project-card.flagship { grid-column: span 2; }
-  .project-archive { grid-column: span 2; }
 }
 
 .cert-heading {

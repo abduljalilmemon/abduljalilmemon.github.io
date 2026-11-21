@@ -118,6 +118,15 @@ export const data = {
       project: { name: 'Streaker', anchor: '#project-streaker' },
       note: 'built with a small team; working demo shipped within the event deadline.',
     },
+    {
+      rank: '2nd',
+      title: '2nd Place (local) · NASA International Space Apps Challenge 2026',
+      org: 'NASA Space Apps',
+      place: 'BTU Cottbus-Senftenberg',
+      date: '2026',
+      project: { name: 'FireChronos', anchor: '#project-firechronos' },
+      note: 'nominated for Global Judging; built with a team of five.',
+    },
   ],
 
   skills: [
@@ -208,6 +217,18 @@ export const data = {
       desc: 'An ongoing microservice health platform, with each service maintained in its own repo under a shared GitHub organization. Currently building out the auth-service with FastAPI, PostgreSQL, and Redis.',
       stack: ['FastAPI', 'PostgreSQL', 'Redis', 'Microservices'],
       links: [{ label: 'view source', href: 'HEALTH_PLATFORM_REPO_URL' }],
+    },
+    {
+      id: 'firechronos',
+      name: 'FireChronos',
+      status: 'shipped',
+      desc: "Interactive geospatial platform combining NASA's MODIS and VIIRS satellite data to explore 25 years of fire activity across Europe (2001–2025): maps, burning calendars, seasonal patterns and weather context. VIIRS sees far smaller fires than MODIS, so raw counts jump when the record switches sensors in 2012; we built a correction, tested it on held-out years, and made every number traceable to its source.",
+      award: '2nd Place (local) · NASA Space Apps 2026',
+      stack: ['NASA MODIS', 'VIIRS', 'Geospatial', 'Remote Sensing', 'Data Science'],
+      links: [
+        { label: 'live demo', href: 'https://nasa-hackaton-2026.vercel.app' },
+        { label: 'view source', href: 'FIRECHRONOS_REPO_URL' },
+      ],
     },
     {
       id: 'streaker',

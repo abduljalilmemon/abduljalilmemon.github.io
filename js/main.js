@@ -1,12 +1,11 @@
 // jalil.sys: page behaviour. Loaded as an ES module (deferred by default).
-import { data } from './data.js?v=7155e746';
-import { syncCvLinks } from './cv.js?v=51a8bcc1';
-import { renderAll, emailOf } from './render.js?v=89b655e1';
+import { data } from './data.js?v=9837c4ea';
+import { renderAll, emailOf } from './render.js?v=735ce6a7';
 import { initBoot } from './boot.js?v=5eea878a';
-import { initTerminal } from './terminal.js?v=82a0f616';
+import { initTerminal } from './terminal.js?v=452731dc';
 import { initTrace } from './trace.js?v=8c662fe2';
 import { initCards } from './cards.js?v=91bd5b31';
-import { initPalette } from './palette.js?v=f8adc361';
+import { initPalette } from './palette.js?v=9aeac603';
 import { initEffects } from './effects.js?v=3bf109ab';
 import { initMetrics } from './metrics.js?v=bff14201';
 
@@ -152,7 +151,6 @@ function initContactForm() {
 // If rendering throws, the static fallback in index.html stays in place.
 const dev = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 try { renderAll(data, document, { dev, now: new Date(), reveal: true }); } catch (err) { console.error('render failed, keeping static fallback', err); }
-syncCvLinks(data.profile.cv).catch(() => {}); // hide Download CV if cv.pdf is missing
 // Static (non-rendered) email links, e.g. the nav CTA: assemble the address now.
 document.querySelectorAll('[data-email-link]').forEach((a) => { a.href = `mailto:${emailOf(data)}`; });
 

@@ -1,23 +1,11 @@
-// jalil.sys: is the CV actually there? One HEAD request, shared by the hero
-// button, the terminal `resume` command and the palette. A missing file (or a
-// server that answers with an HTML 404 page) counts as "not available", so we
-// never offer a download that saves an error page as cv.htm.
+// jalil.sys: is the CV actually there? scripts/sync-fallback.mjs checks for
+// cv.pdf in the repo and marks the hero's [data-cv] link `hidden` when it is
+// missing. The hero button, the terminal `resume` command and the palette all
+// read that one flag, so none of them offers a download that would save the
+// 404 page as cv.htm. (No network probe: a 404 HEAD request would log a
+// console error on every visit.)
 
-let check;
-
-export function cvAvailable(href) {
-  if (!check) {
-    check = fetch(href, { method: 'HEAD', cache: 'no-cache' })
-      .then((res) => res.ok && /pdf/i.test(res.headers.get('content-type') || ''))
-      .catch(() => false);
-  }
-  return check;
-}
-
-// Hide every [data-cv] link when the file is missing.
-export function syncCvLinks(href) {
-  return cvAvailable(href).then((ok) => {
-    document.querySelectorAll('[data-cv]').forEach((a) => { a.hidden = !ok; });
-    return ok;
-  });
+export function cvAvailable() {
+  const link = document.querySelector('[data-cv]');
+  return Promise.resolve(Boolean(link) && !link.hasAttribute('hidden'));
 }

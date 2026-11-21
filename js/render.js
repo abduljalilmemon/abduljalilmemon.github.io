@@ -171,6 +171,7 @@ export const blocks = {
       alumniOf: org(S.alumniOf),
       affiliation: org(S.affiliation),
       knowsAbout: ['Python', 'Distributed Systems', 'LLM Evaluation', 'Search Infrastructure'],
+      award: d.awards.map((a) => (a.title.includes(a.date) ? a.title : `${a.title} (${a.date})`)),
     }, null, 2);
     return `\n${json.replace(/</g, '\\u003c').replace(/^/gm, '  ')}\n  `;
   },

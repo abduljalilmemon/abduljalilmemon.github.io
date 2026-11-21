@@ -27,7 +27,7 @@
   <meta name="twitter:image:alt" content="jalil.sys: Abdul Jalil Memon, Senior Software Engineer.">
 
   <!-- Structured data: generated from js/data.js by scripts/sync-fallback.mjs -->
-  <script type="application/ld+json" data-render="jsonld" data-render-hash="1g338rv">
+  <script type="application/ld+json" data-render="jsonld" data-render-hash="1ja9rji">
   {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -59,6 +59,10 @@
       "Distributed Systems",
       "LLM Evaluation",
       "Search Infrastructure"
+    ],
+    "award": [
+      "1st Place · Monad Blitz Berlin Hackathon (Sep 2026)",
+      "2nd Place (local) · NASA International Space Apps Challenge 2026"
     ]
   }
   </script>
@@ -71,7 +75,7 @@
 
   <!-- Self-hosted fonts (latin subset, only the weights in use). The display face is preloaded. -->
   <link rel="preload" href="fonts/syne-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/main.css?v=45e59e46">
+  <link rel="stylesheet" href="css/main.css?v=c73ac2b9">
   <script>
     // .js gates reveal styles; .boot shows the boot overlay on the first visit of a
     // session (never under reduced motion). js/boot.js clears both flags.
@@ -89,17 +93,17 @@
       } catch (e) { /* storage blocked: skip the boot */ }
     })(document.documentElement);
   </script>
-  <link rel="modulepreload" href="js/data.js?v=7155e746">
-  <link rel="modulepreload" href="js/render.js?v=89b655e1">
+  <link rel="modulepreload" href="js/data.js?v=9837c4ea">
+  <link rel="modulepreload" href="js/render.js?v=735ce6a7">
   <link rel="modulepreload" href="js/boot.js?v=5eea878a">
-  <link rel="modulepreload" href="js/terminal.js?v=82a0f616">
+  <link rel="modulepreload" href="js/terminal.js?v=452731dc">
   <link rel="modulepreload" href="js/metrics.js?v=bff14201">
   <link rel="modulepreload" href="js/trace.js?v=8c662fe2">
   <link rel="modulepreload" href="js/cards.js?v=91bd5b31">
-  <link rel="modulepreload" href="js/palette.js?v=f8adc361">
+  <link rel="modulepreload" href="js/palette.js?v=9aeac603">
   <link rel="modulepreload" href="js/effects.js?v=3bf109ab">
   <link rel="modulepreload" href="js/toast.js?v=e12d8853">
-  <script type="module" src="js/main.js?v=db13eb27" defer></script>
+  <script type="module" src="js/main.js?v=06f5c5ce" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -226,13 +230,21 @@
     <div class="container">
       <div class="section-label">02 / Awards</div>
       <h2 class="sr-only">Awards</h2>
-      <div class="award-list reveal" data-render="awards" data-render-hash="heoyzn">
+      <div class="award-list reveal" data-render="awards" data-render-hash="13n99qw">
         <article class="award-item">
           <div class="award-rank" aria-hidden="true">1st</div>
           <div class="award-body">
             <h3 class="award-title">1st Place · Monad Blitz Berlin Hackathon</h3>
             <div class="award-meta">Encode Club / Monad Foundation · CIC Berlin · Sep 2026</div>
             <p class="award-note">Project <a href="#project-streaker">Streaker</a>, built with a small team; working demo shipped within the event deadline.</p>
+          </div>
+        </article>
+        <article class="award-item">
+          <div class="award-rank" aria-hidden="true">2nd</div>
+          <div class="award-body">
+            <h3 class="award-title">2nd Place (local) · NASA International Space Apps Challenge 2026</h3>
+            <div class="award-meta">NASA Space Apps · BTU Cottbus-Senftenberg · 2026</div>
+            <p class="award-note">Project <a href="#project-firechronos">FireChronos</a>, nominated for Global Judging; built with a team of five.</p>
           </div>
         </article>
       </div>
@@ -415,8 +427,8 @@
     <div class="container">
       <div class="section-label">05 / Projects</div>
       <h2 class="section-title reveal">Featured Work</h2>
-      <p class="section-sub reveal">Agent evals, real-time voice AI, backend services and the odd low-level experiment. Status shows what is running, building, shipped or archived.</p>
-      <div class="projects-grid" data-render="projects" data-render-hash="5b8jq5">
+      <p class="section-sub reveal">Agent evals, real-time voice AI, satellite-data analysis, backend services and the odd low-level experiment. Status shows what is running, building, shipped or archived.</p>
+      <div class="projects-grid" data-render="projects" data-render-hash="1sciacv">
         <article class="project-card" id="project-swapcheck">
           <!-- SWAPCHECK_REPO_URL -->
           <div class="project-meta"><span class="project-num">01</span><span class="project-status" data-status="building"><span class="status-glyph" aria-hidden="true">◐</span>building</span></div>
@@ -456,16 +468,31 @@
             <span class="stack-tag">Microservices</span>
           </div>
         </article>
+        <article class="project-card" id="project-firechronos">
+          <!-- FIRECHRONOS_REPO_URL -->
+          <div class="project-meta"><span class="project-num">04</span><span class="project-status" data-status="shipped"><span class="status-glyph" aria-hidden="true">✓</span>shipped</span></div>
+          <h3 class="project-name">FireChronos</h3>
+          <div class="project-award">🏆 2nd Place (local) · NASA Space Apps 2026</div>
+          <p class="project-desc">Interactive geospatial platform combining NASA's MODIS and VIIRS satellite data to explore 25 years of fire activity across Europe (2001–2025): maps, burning calendars, seasonal patterns and weather context. VIIRS sees far smaller fires than MODIS, so raw counts jump when the record switches sensors in 2012; we built a correction, tested it on held-out years, and made every number traceable to its source.</p>
+          <div class="project-stack">
+            <span class="stack-tag">NASA MODIS</span>
+            <span class="stack-tag">VIIRS</span>
+            <span class="stack-tag">Geospatial</span>
+            <span class="stack-tag">Remote Sensing</span>
+            <span class="stack-tag">Data Science</span>
+          </div>
+          <div class="project-links"><a href="https://nasa-hackaton-2026.vercel.app" target="_blank" rel="noopener">live demo →</a></div>
+        </article>
         <article class="project-card" id="project-streaker">
           <!-- STREAKER_DESC --><!-- STREAKER_URL -->
-          <div class="project-meta"><span class="project-num">04</span><span class="project-status" data-status="shipped"><span class="status-glyph" aria-hidden="true">✓</span>shipped</span></div>
+          <div class="project-meta"><span class="project-num">05</span><span class="project-status" data-status="shipped"><span class="status-glyph" aria-hidden="true">✓</span>shipped</span></div>
           <h3 class="project-name">Streaker</h3>
           <div class="project-award">🏆 1st Place · Monad Blitz Berlin</div>
           <p class="project-desc">Built with a small team at Monad Blitz Berlin (Sep 2026); working demo shipped within the event deadline.</p>
         </article>
         <article class="project-card" id="project-sales-automation">
           <!-- SALES_AUTOMATION_REPO_URL -->
-          <div class="project-meta"><span class="project-num">05</span></div>
+          <div class="project-meta"><span class="project-num">06</span></div>
           <h3 class="project-name">Enterprise Sales Automation (n8n)</h3>
           <p class="project-desc">Built complex n8n workflows for multi-source sales reporting. Integrated Gmail, Discord, and custom API error monitoring to replace manual data processing.</p>
           <div class="project-stack">
@@ -476,7 +503,7 @@
         </article>
         <article class="project-card" id="project-mario-asm">
           <!-- MARIO_ASM_REPO_URL -->
-          <div class="project-meta"><span class="project-num">06</span><span class="project-status" data-status="archived"><span class="status-glyph" aria-hidden="true">○</span>archived</span></div>
+          <div class="project-meta"><span class="project-num">07</span><span class="project-status" data-status="archived"><span class="status-glyph" aria-hidden="true">○</span>archived</span></div>
           <h3 class="project-name">8-bit Super Mario in x86 Assembly</h3>
           <p class="project-desc">A from-scratch Super Mario implementation written in Assembly. Managed low-level memory, sprite rendering, and hardware-level collision logic without high-level abstractions.</p>
           <div class="project-stack">

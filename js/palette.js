@@ -3,8 +3,8 @@
 // active option with aria-activedescendant. Tab is trapped inside, Escape
 // closes, and focus returns to whatever opened it.
 
-import { cvAvailable } from './cv.js?v=51a8bcc1';
-import { emailOf } from './render.js?v=89b655e1';
+import { cvAvailable } from './cv.js?v=0c22d122';
+import { emailOf } from './render.js?v=735ce6a7';
 import { toast } from './toast.js?v=e12d8853';
 
 const isMac = /Mac|iPhone|iPad/.test(navigator.userAgentData?.platform || navigator.platform || '');
@@ -43,7 +43,7 @@ export function initPalette(data) {
   ];
 
   // Drop "Download CV" while cv.pdf isn't uploaded (it would save the 404 page).
-  cvAvailable(data.profile.cv).then((ok) => { if (!ok) actions.splice(actions.findIndex((a) => a.cv), 1); });
+  cvAvailable().then((ok) => { if (!ok) actions.splice(actions.findIndex((a) => a.cv), 1); });
 
   /* ---------- DOM ---------- */
   const dlg = document.createElement('dialog');
