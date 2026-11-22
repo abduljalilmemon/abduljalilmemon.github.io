@@ -107,9 +107,10 @@ function initContactForm() {
     e.preventDefault();
     if (!form.reportValidity()) return;
 
-    // No Formspree ID yet: hand the message to the visitor's email app instead
+    // No Web3Forms key yet: hand the message to the visitor's email app instead
     // of dead-ending. Nothing claims it was sent; the visitor still presses send.
-    if (form.action.includes('FORMSPREE_ID')) {
+    const key = form.querySelector('input[name="access_key"]')?.value || '';
+    if (!key || key === 'WEB3FORMS_ACCESS_KEY') {
       const fd = new FormData(form);
       const name = String(fd.get('name') || '').trim();
       const from = String(fd.get('email') || '').trim();
@@ -128,16 +129,16 @@ function initContactForm() {
         body: new FormData(form),
         headers: { Accept: 'application/json' },
       });
-      if (res.ok) {
+      // Web3Forms answers JSON { success, message }; only a confirmed success counts.
+      let result = null;
+      try { result = await res.json(); } catch { /* non-JSON error body */ }
+      if (res.ok && result?.success) {
         form.reset();
         show('success', "✓ Message sent. I'll get back to you soon.");
       } else {
-        let msg = 'The message could not be sent.';
-        try {
-          const data = await res.json();
-          if (data?.errors?.length) msg = data.errors.map((er) => er.message).join(' ');
-        } catch { /* non-JSON error body */ }
-        show('error', `✗ ${msg}${mailto}`);
+        const msg = (result?.message && String(result.message)) || 'The message could not be sent.';
+        const safe = msg.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+        show('error', `✗ ${safe}${mailto}`);
       }
     } catch {
       show('error', `✗ Network error, message not sent.${mailto}`);

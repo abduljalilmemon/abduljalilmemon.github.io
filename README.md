@@ -73,15 +73,23 @@ Then run `node scripts/sync-fallback.mjs`.
   Placeholder links never appear on the live site. On localhost they show up as amber TODO tags.
 - To retire a project, move it to `archive` (the collapsed "Archive" row) or set `status: 'archived'`.
 
-## Set up the contact form (Formspree)
+## Set up the contact form (Web3Forms)
 
-1. Create a form at https://formspree.io and copy its ID (the part after `/f/`).
-2. In `index.html`, replace `FORMSPREE_ID` in the form's `action`:
+GitHub Pages can't receive form posts, so messages go through
+[Web3Forms](https://web3forms.com): free, no account needed, 250 messages a month.
+
+1. Go to https://web3forms.com, enter the email address that should receive messages, and
+   copy the **access key** they send you.
+2. In `index.html`, replace the placeholder in the contact form:
    ```html
-   <form … action="https://formspree.io/f/abcdwxyz" method="POST">
+   <input type="hidden" name="access_key" value="WEB3FORMS_ACCESS_KEY">
    ```
-3. Commit and push. Until the ID is set, submitting opens the visitor's email app
-   with their name and message pre-filled (a `mailto:`). It never claims a message was sent.
+3. Run `node scripts/sync-fallback.mjs`, then commit and push.
+
+The access key is meant to be public (it can only deliver to your inbox), so your email
+address never appears in the page source. Until the key is set, submitting opens the
+visitor's email app with their message pre-filled. The form only reports "Message sent"
+when Web3Forms confirms `success: true`. A hidden `botcheck` field catches simple spam bots.
 
 ## Placeholders
 
@@ -94,7 +102,7 @@ grep -rnE "\b[A-Z][A-Z0-9]*(_[A-Z0-9]+)+\b" index.html js/data.js
 
 | Placeholder                 | File            | What to put there                       |
 |-----------------------------|-----------------|-----------------------------------------|
-| `FORMSPREE_ID`              | `index.html`    | Formspree form ID                        |
+| `WEB3FORMS_ACCESS_KEY`      | `index.html`    | Web3Forms access key (contact form)      |
 | `SWAPCHECK_REPO_URL`        | `js/data.js`    | SwapCheck repository URL                 |
 | `FIRECHRONOS_REPO_URL`      | `js/data.js`    | FireChronos repo URL (or remove the link)|
 | `STREAKER_DESC`             | `js/data.js`    | One-line Streaker description            |

@@ -260,3 +260,9 @@ layout on this machine, about 10× a typical laptop. Re-check with PageSpeed Ins
 
 Known: without JS, a deep link such as `/#contact` can land a little early (the late font swap shifts content).
 Clicking "Contact" in the nav overshoots by about 65px because it is the last section.
+
+## 13. Contact form provider
+
+Switched from Formspree to **Web3Forms** (your choice, 2026-11-22): no account needed, and the public
+access key never exposes your email. The placeholder is `WEB3FORMS_ACCESS_KEY` in `index.html`.
+Success is shown only on `{ success: true }`. Until the key is set, submitting opens a mailto fallback.

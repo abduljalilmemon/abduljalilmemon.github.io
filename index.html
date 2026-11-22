@@ -103,7 +103,7 @@
   <link rel="modulepreload" href="js/palette.js?v=dfbfedef">
   <link rel="modulepreload" href="js/effects.js?v=3bf109ab">
   <link rel="modulepreload" href="js/toast.js?v=e12d8853">
-  <script type="module" src="js/main.js?v=eaf541b6" defer></script>
+  <script type="module" src="js/main.js?v=410e8c24" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -668,7 +668,12 @@
             </a>
           </div>
         </div>
-        <form class="contact-form reveal" id="contact-form" action="https://formspree.io/f/FORMSPREE_ID" method="POST">
+        <form class="contact-form reveal" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
+          <!-- Web3Forms: the access key is public by design (it can only deliver to the owner's inbox).
+               Get one at https://web3forms.com and replace the placeholder. -->
+          <input type="hidden" name="access_key" value="WEB3FORMS_ACCESS_KEY">
+          <input type="hidden" name="subject" value="New message from jalil.sys">
+          <input type="hidden" name="from_name" value="jalil.sys portfolio">
           <div class="form-group">
             <label class="form-label" for="cf-name">Your Name</label>
             <input class="form-input" id="cf-name" name="name" type="text" autocomplete="name" required>
@@ -682,8 +687,8 @@
             <textarea class="form-textarea" id="cf-message" name="message" placeholder="Tell me about the project or opportunity..." required></textarea>
           </div>
           <div class="hp-field" aria-hidden="true">
-            <label for="cf-gotcha">Leave this empty</label>
-            <input id="cf-gotcha" type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+            <label for="cf-botcheck">Leave this unchecked</label>
+            <input id="cf-botcheck" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off">
           </div>
           <button type="submit" class="btn-submit">Send Message →</button>
           <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
