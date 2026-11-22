@@ -8,12 +8,11 @@
 // Writes: og.png (1200x630), favicon.svg, favicon.ico (16+32),
 //         img/apple-touch-icon.png (180), img/icon-192.png, img/icon-512.png
 
-import { spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync, mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { data } from '../js/data.js';
+import { withChrome } from './chrome.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -80,48 +79,13 @@ function ogSvg() {
 </svg>`;
 }
 
-/* ---------- headless Chrome via CDP ---------- */
-const CHROME = process.env.CHROME || [
-  'C:/Program Files/Google/Chrome/Application/chrome.exe',
-  'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
-  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-  '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser',
-].find(existsSync);
-if (!CHROME) { console.error('Chrome not found: set CHROME=/path/to/chrome'); process.exit(1); }
-
-async function withChrome(fn) {
-  const port = 9600 + Math.floor(Math.random() * 300);
-  const prof = mkdtempSync(join(tmpdir(), 'jalil-img-'));
-  const proc = spawn(CHROME, ['--headless=new', '--hide-scrollbars', '--no-first-run', `--remote-debugging-port=${port}`, `--user-data-dir=${prof}`, 'about:blank'], { stdio: 'ignore' });
-  try {
-    let target;
-    for (let k = 0; k < 60 && !target; k++) {
-      try { target = (await (await fetch(`http://127.0.0.1:${port}/json`)).json()).find((t) => t.type === 'page'); } catch {}
-      if (!target) await new Promise((r) => setTimeout(r, 200));
-    }
-    const ws = new WebSocket(target.webSocketDebuggerUrl);
-    await new Promise((r) => ws.addEventListener('open', r));
-    let id = 0; const pending = new Map();
-    ws.addEventListener('message', (e) => { const m = JSON.parse(e.data); if (pending.has(m.id)) { pending.get(m.id)(m.result); pending.delete(m.id); } });
-    const send = (method, params = {}) => new Promise((r) => { pending.set(++id, r); ws.send(JSON.stringify({ id, method, params })); });
-    await send('Page.enable');
-    await send('Emulation.setDefaultBackgroundColorOverride', { color: { r: 0, g: 0, b: 0, a: 0 } }); // keep icon corners transparent
-    const frameId = (await send('Page.getFrameTree')).frameTree.frame.id;
-    const render = async (svg, w, h, scale = 1) => {
-      await send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: scale, mobile: false });
-      const html = `<!doctype html><html><head><style>html,body{margin:0;background:transparent}svg{display:block;width:${w}px;height:${h}px}</style></head><body>${svg}</body></html>`;
-      await send('Page.setDocumentContent', { frameId, html });
-      await send('Runtime.evaluate', { expression: 'document.fonts.ready.then(() => new Promise(r => setTimeout(r, 150)))', awaitPromise: true });
-      const shot = await send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: w, height: h, scale: 1 }, omitBackground: true });
-      return Buffer.from(shot.data, 'base64');
-    };
-    await fn(render);
-    ws.close();
-  } finally {
-    proc.kill();
-    try { rmSync(prof, { recursive: true, force: true }); } catch {}
-  }
-}
+/* ---------- render SVG -> PNG in headless Chrome ---------- */
+const makeRender = (send, setHtml) => async (svg, w, h) => {
+  await send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: false });
+  await setHtml(`<!doctype html><html><head><style>html,body{margin:0;background:transparent}svg{display:block;width:${w}px;height:${h}px}</style></head><body>${svg}</body></html>`);
+  const shot = await send('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: w, height: h, scale: 1 }, omitBackground: true });
+  return Buffer.from(shot.data, 'base64');
+};
 
 // ICO container with embedded PNGs (supported by every current browser).
 function ico(pngs) {
@@ -138,7 +102,9 @@ function ico(pngs) {
   return Buffer.concat([head, ...pngs.map((p) => p.buf)]);
 }
 
-await withChrome(async (render) => {
+await withChrome(async ({ send, setHtml }) => {
+  await send('Emulation.setDefaultBackgroundColorOverride', { color: { r: 0, g: 0, b: 0, a: 0 } }); // transparent icon corners
+  const render = makeRender(send, setHtml);
   writeFileSync(join(root, 'og.png'), await render(ogSvg(), 1200, 630));
   writeFileSync(join(root, 'favicon.svg'), ICON_SVG + '\n');
   const sized = (n) => ICON_SVG.replace('<svg ', `<svg width="${n}" height="${n}" `);

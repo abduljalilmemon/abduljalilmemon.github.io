@@ -131,6 +131,18 @@ spaces or brackets. Until it exists, the "Download CV" button is hidden, the ter
 command says it isn't uploaded, and the palette leaves it out. After adding the file, run
 `node scripts/sync-fallback.mjs` so the static page shows the button too.
 
+## CV (cv.pdf)
+
+```bash
+node scripts/make-cv.mjs        # writes cv.pdf from js/data.js (needs Chrome or Edge)
+node scripts/sync-fallback.mjs  # shows the "Download CV" button once cv.pdf exists
+```
+
+The CV is generated from the same `js/data.js` as the site, so the two always agree. It's an
+ATS-friendly single-column A4 PDF with selectable text. Choose the projects it lists in
+`CV_PROJECTS` at the top of `scripts/make-cv.mjs`. The phone number is left out on purpose,
+because the PDF is public. `cv.preview.html` is a local preview and is git-ignored.
+
 ## Images and icons
 
 ```bash
@@ -164,7 +176,7 @@ js/toast.js           small live-region toast
 js/cv.js              checks that cv.pdf exists before offering it
 js/notfound.js        404 terminal
 fonts/                self-hosted latin subsets (Syne, DM Sans, Space Mono)
-scripts/              dev tools: serve.py, sync-fallback.mjs, make-images.mjs
+scripts/              dev tools: serve.py, sync-fallback.mjs, make-images.mjs, make-cv.mjs, chrome.mjs
 PLAN.md               decisions, measurements and open questions
 ```
 
