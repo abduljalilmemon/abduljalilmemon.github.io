@@ -108,6 +108,8 @@ function animate(host, hero, graph, legend) {
   let running = false, visible = true, onScreen = true, raf = 0, last = 0, spawnAcc = 0;
   let speedMul = 1, hover = null; // hover = target node id
   let burstUntil = 0;
+  let alert = null;       // node id under incident (red pulse, packets back up)
+  let healed = null, healT = 0; // node just resolved (green ring)
 
   function resize() {
     const r = host.getBoundingClientRect();
@@ -152,6 +154,30 @@ function animate(host, hero, graph, legend) {
     ctx.drawImage(staticLayer, 0, 0);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+    // incident: failing node pulses red, its inbound edges glow red
+    if (alert) {
+      const n = graph.nodes.find((x) => x.id === alert);
+      if (n) {
+        const pulse = (Math.sin(now / 260) + 1) / 2;
+        ctx.strokeStyle = '#ff5f57';
+        ctx.lineWidth = 1.5;
+        ctx.globalAlpha = 0.35;
+        for (const e of graph.edges) if (e.b === n) { ctx.beginPath(); ctx.moveTo(e.a.px, e.a.py); ctx.quadraticCurveTo(e.cx, e.cy, e.b.px, e.b.py); ctx.stroke(); }
+        ctx.globalAlpha = 0.5 + pulse * 0.5;
+        ctx.beginPath(); ctx.arc(n.px, n.py, 7 + pulse * 6, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = '#ff5f57'; ctx.globalAlpha = 0.9;
+        ctx.beginPath(); ctx.arc(n.px, n.py, 3.5, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    if (healed && healT > 0) {
+      const n = graph.nodes.find((x) => x.id === healed);
+      healT = Math.max(0, healT - dt * 0.8);
+      if (n) {
+        ctx.strokeStyle = '#10b981'; ctx.lineWidth = 2; ctx.globalAlpha = healT;
+        ctx.beginPath(); ctx.arc(n.px, n.py, 6 + (1 - healT) * 22, 0, Math.PI * 2); ctx.stroke();
+      }
+    }
+    ctx.lineWidth = 1;
     // arrival flashes: a node lights up when it receives a packet
     for (const n of graph.nodes) {
       if (n.flash <= 0) continue;
@@ -165,7 +191,9 @@ function animate(host, hero, graph, legend) {
     ctx.globalCompositeOperation = 'lighter';
     for (let k = packets.length - 1; k >= 0; k--) {
       const p = packets[k];
-      p.t += (p.speed * speedMul * dt) / p.e.len;
+      // incident: traffic into the failing node backs up
+      const slow = alert && p.e.b.id === alert ? 0.3 : 1;
+      p.t += (p.speed * speedMul * slow * dt) / p.e.len;
       if (p.t >= 1) {
         const node = p.e.b;
         node.flash = 1;
@@ -212,6 +240,12 @@ function animate(host, hero, graph, legend) {
 
   // Konami burst: flood with packets for e.detail.ms; they drain naturally after.
   window.addEventListener('jalil:burst', (e) => { burstUntil = performance.now() + (e.detail?.ms || 3000); });
+  // On-call game (incident.js): start → red alert, resolved → green ring, end → clear.
+  window.addEventListener('jalil:incident', (e) => {
+    const { state, node } = e.detail || {};
+    if (state === 'start') alert = node;
+    else { alert = null; if (state === 'resolved') { healed = node; healT = 1; } }
+  });
 
   setRunning();
   return { canvas, packets, graph };
@@ -278,6 +312,8 @@ function drawLegend(g, w, h, legend) {
 
 /* ---------- reduced motion: static SVG ---------- */
 function staticFrame(host, graph, legend) {
+  let alert = null;
+  window.addEventListener('jalil:incident', (e) => { alert = e.detail?.state === 'start' ? e.detail.node : null; render(); });
   const render = () => {
     const r = host.getBoundingClientRect();
     const w = Math.round(r.width), h = Math.round(r.height);
@@ -291,7 +327,8 @@ function staticFrame(host, graph, legend) {
     const small = w < 600;
     const nodes = graph.nodes.map((n) => {
       const l = labelPos(n, w, h);
-      return `<circle cx="${n.px}" cy="${n.py}" r="4" fill="#0a0a0f" stroke="rgba(0,229,255,0.55)"/>` +
+      const hot = n.id === alert;
+      return `<circle cx="${n.px}" cy="${n.py}" r="${hot ? 6 : 4}" fill="${hot ? '#ff5f57' : '#0a0a0f'}" stroke="${hot ? '#ff5f57' : 'rgba(0,229,255,0.55)'}"/>` +
         `<text x="${l.x}" y="${l.y}" text-anchor="${l.align === 'left' ? 'start' : 'end'}" dominant-baseline="middle">${n.id}</text>`;
     }).join('');
     let leg = '';

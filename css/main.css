@@ -1293,3 +1293,19 @@ main > section:not(#hero) { content-visibility: auto; }
   #about { contain-intrinsic-size: auto 1150px; }
   #contact { contain-intrinsic-size: auto 800px; }
 }
+
+/* ---------- On-call game + flags ---------- */
+.term-input-row.oncall .t-prompt { color: #ff5f57; }
+.terminal-card:has(.term-input-row.oncall) { border-color: rgba(255,95,87,0.45); }
+.flags-chip {
+  background: transparent;
+  border: 1px solid var(--dim);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.flags-chip:hover { color: var(--accent); border-color: var(--accent); }
+.flags-chip.complete { color: var(--accent3); border-color: rgba(16,185,129,0.5); }

@@ -77,7 +77,7 @@
 
   <!-- Self-hosted fonts (latin subset, only the weights in use). The display face is preloaded. -->
   <link rel="preload" href="fonts/syne-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/main.css?v=2fe180ea">
+  <link rel="stylesheet" href="css/main.css?v=043836f5">
   <script>
     // .js gates reveal styles; .boot shows the boot overlay on the first visit of a
     // session (never under reduced motion). js/boot.js clears both flags.
@@ -95,17 +95,17 @@
       } catch (e) { /* storage blocked: skip the boot */ }
     })(document.documentElement);
   </script>
-  <link rel="modulepreload" href="js/data.js?v=3f62d615">
+  <link rel="modulepreload" href="js/data.js?v=6e8accd4">
   <link rel="modulepreload" href="js/render.js?v=e103ddc5">
   <link rel="modulepreload" href="js/boot.js?v=5eea878a">
-  <link rel="modulepreload" href="js/terminal.js?v=70f35bea">
+  <link rel="modulepreload" href="js/terminal.js?v=1d2878ed">
   <link rel="modulepreload" href="js/metrics.js?v=bff14201">
-  <link rel="modulepreload" href="js/trace.js?v=8c662fe2">
+  <link rel="modulepreload" href="js/trace.js?v=2fe58371">
   <link rel="modulepreload" href="js/cards.js?v=91bd5b31">
-  <link rel="modulepreload" href="js/palette.js?v=6d142a4b">
-  <link rel="modulepreload" href="js/effects.js?v=3bf109ab">
+  <link rel="modulepreload" href="js/palette.js?v=32d77d67">
+  <link rel="modulepreload" href="js/effects.js?v=28bc18c6">
   <link rel="modulepreload" href="js/toast.js?v=e12d8853">
-  <script type="module" src="js/main.js?v=9785f47f" defer></script>
+  <script type="module" src="js/main.js?v=d747485f" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -729,6 +729,7 @@
     <div class="container">
       <div class="footer-inner">
         <div class="footer-copy">© 2026 <span>Abdul Jalil Memon</span>. Built with Claude Code as a pair programmer.</div>
+        <button type="button" class="flags-chip" id="flags-chip" hidden aria-label="Hidden flags found: show in terminal">⚑ <span class="flags-count">0/6</span> flags</button>
         <div class="footer-status" data-render="footerStatus" data-render-hash="15xzijw">uptime: since 2021 · p99 latency: replies within 24h</div>
         <div class="footer-links" data-render="footerLinks" data-render-hash="nzhu1v">
           <a href="https://github.com/abduljalilmemon" target="_blank" rel="noopener">GitHub</a>

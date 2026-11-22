@@ -1,12 +1,13 @@
 // jalil.sys: page behaviour. Loaded as an ES module (deferred by default).
-import { data } from './data.js?v=3f62d615';
+import { data } from './data.js?v=6e8accd4';
 import { renderAll, emailOf } from './render.js?v=e103ddc5';
 import { initBoot } from './boot.js?v=5eea878a';
-import { initTerminal } from './terminal.js?v=70f35bea';
-import { initTrace } from './trace.js?v=8c662fe2';
+import { initTerminal } from './terminal.js?v=1d2878ed';
+import { initAchievements } from './achievements.js?v=9697e32b';
+import { initTrace } from './trace.js?v=2fe58371';
 import { initCards } from './cards.js?v=91bd5b31';
-import { initPalette } from './palette.js?v=6d142a4b';
-import { initEffects } from './effects.js?v=3bf109ab';
+import { initPalette } from './palette.js?v=32d77d67';
+import { initEffects } from './effects.js?v=28bc18c6';
 import { initMetrics } from './metrics.js?v=bff14201';
 
 const motionOK = window.matchMedia('(prefers-reduced-motion: no-preference)');
@@ -161,6 +162,7 @@ const safe = (name, fn) => { try { return fn(); } catch (err) { console.error(`$
 const booted = safe('boot', () => initBoot(data)) || Promise.resolve();
 safe('terminal', () => initTerminal(data, booted));
 safe('metrics', () => initMetrics(booted));
+safe('achievements', () => initAchievements(data));
 // Below-the-fold and on-demand features: set up when the browser is idle,
 // so the first load task stays short (TBT).
 const whenIdle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 300));
@@ -192,7 +194,7 @@ window.addEventListener('load', () => requestAnimationFrame(reanchor), { once: t
 // Bus canvas: loaded and started after first paint, when the browser is idle.
 const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 200));
 requestAnimationFrame(() => idle(() => {
-  import('./bus-canvas.js?v=f813c206')
+  import('./bus-canvas.js?v=fe476f1a')
     .then(({ initBus }) => initBus(data))
     .catch((err) => console.error('bus canvas failed', err));
 }, { timeout: 1000 }));

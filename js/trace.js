@@ -8,7 +8,12 @@ export function initTrace() {
   const bars = [...root.querySelectorAll('.trace-bar')];
   if (!bars.length) return;
 
+  const seen = new Set();
   const set = (bar, open) => {
+    if (open) {
+      seen.add(bar);
+      if (seen.size === bars.length) window.dispatchEvent(new CustomEvent('jalil:flag', { detail: { id: 'trace' } }));
+    }
     bar.setAttribute('aria-expanded', String(open));
     const panel = document.getElementById(bar.getAttribute('aria-controls'));
     if (panel) panel.hidden = !open;

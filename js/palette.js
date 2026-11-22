@@ -32,6 +32,8 @@ export function initPalette(data) {
     { label: 'Open LinkedIn', hint: L.linkedin.handle, group: 'link', run: () => window.open(L.linkedin.url, '_blank', 'noopener') },
     { label: 'Copy email', hint: emailOf(data), group: 'action', keepFocus: true, run: () => copy(emailOf(data)) },
     { label: 'Download CV', hint: data.profile.cv, group: 'action', cv: true, run: () => download(data.profile.cv) },
+    { label: 'Start an incident (on-call game)', hint: 'terminal', group: 'action', run: () => window.dispatchEvent(new CustomEvent('jalil:term-run', { detail: { cmd: 'incident' } })) },
+    { label: 'Show hidden flags', hint: 'terminal', group: 'action', run: () => window.dispatchEvent(new CustomEvent('jalil:term-run', { detail: { cmd: 'flags' } })) },
     {
       label: 'Focus terminal', hint: 'profile.json', group: 'action',
       run: () => {
@@ -111,6 +113,7 @@ export function initPalette(data) {
     input.value = ''; active = 0; render();
     dlg.showModal();
     input.focus();
+    window.dispatchEvent(new CustomEvent('jalil:flag', { detail: { id: 'palette' } }));
   };
   const close = (restore = true) => {
     if (!dlg.open) return;

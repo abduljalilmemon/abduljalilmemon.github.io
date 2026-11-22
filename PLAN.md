@@ -266,3 +266,15 @@ Clicking "Contact" in the nav overshoots by about 65px because it is the last se
 Switched from Formspree to **Web3Forms** (your choice, 2026-11-22): no account needed, and the public
 access key never exposes your email. The placeholder is `WEB3FORMS_ACCESS_KEY` in `index.html`.
 Success is shown only on `{ success: true }`. Until the key is set, submitting opens a mailto fallback.
+
+## 14. On-call game + hidden flags
+
+- `incident` (terminal or palette) starts one of three simulated incidents: Kafka consumer lag,
+  search latency after a mapping change, and eval verdicts flipping after a judge-model swap.
+  Each postmortem ties back to a real bullet (IOC batching, 50× indexing, SwapCheck/Turing evals).
+- Simulation stays in the terminal and on the bus (red pulsing node, backed-up packets, green ring on
+  resolve; static red node on phones and under reduced motion). The metric tiles are never touched:
+  they show real numbers.
+- Six flags (palette, sudo, trace, incident, konami, explorer), saved in localStorage, with a footer chip.
+- `incident.js` loads only when first used. Dev server default port moved to 8008: 8000 was taken,
+  and another local tool probes 8765.

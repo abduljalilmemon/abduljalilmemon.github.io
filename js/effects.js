@@ -84,6 +84,8 @@ function initKonami() {
     pos = k === KONAMI[pos] ? pos + 1 : (k === KONAMI[0] ? 1 : 0);
     if (pos < KONAMI.length) return;
     pos = 0;
+    // announce the flag after the burst toast, so neither message hides the other
+    setTimeout(() => window.dispatchEvent(new CustomEvent('jalil:flag', { detail: { id: 'konami' } })), 2000);
     if (!motionOK()) { toast('↑↑↓↓←→←→BA accepted: burst skipped (reduced motion)'); return; }
     const hero = document.getElementById('hero');
     if (hero && hero.getBoundingClientRect().bottom < 80) hero.scrollIntoView({ behavior: 'smooth' });

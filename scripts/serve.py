@@ -6,7 +6,7 @@ Same as `python -m http.server`, plus:
   parallel, and the default backlog of 5 makes Windows refuse some of them;
 - 404.html for missing paths and gzip for text files, like GitHub Pages.
 
-    python scripts/serve.py            # http://127.0.0.1:8000
+    python scripts/serve.py            # http://127.0.0.1:8008
     python scripts/serve.py 8765
 """
 import functools
@@ -59,7 +59,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 def main() -> None:
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8008  # 8000 is often taken by other dev servers
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     handler = functools.partial(Handler, directory=root)
     with Server(("127.0.0.1", port), handler) as httpd:

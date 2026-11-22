@@ -12,7 +12,7 @@ npm dependencies at runtime. GitHub Pages serves the repository as is.
 ## Preview locally
 
 ```bash
-python scripts/serve.py          # http://127.0.0.1:8000
+python scripts/serve.py          # http://127.0.0.1:8008
 python scripts/serve.py 8765     # any port
 ```
 
@@ -72,6 +72,21 @@ Then run `node scripts/sync-fallback.mjs`.
 - If you don't have a URL yet, use a placeholder such as `href: 'MY_SERVICE_REPO_URL'`.
   Placeholder links never appear on the live site. On localhost they show up as amber TODO tags.
 - To retire a project, move it to `archive` (the collapsed "Archive" row) or set `status: 'archived'`.
+
+## On-call game and hidden flags
+
+- **`incident`** in the terminal (or "Start an incident" in the Ctrl/⌘ K palette) pages you
+  with a simulated outage. You diagnose it with `status`, `logs <service>`, `metrics <service>`
+  and `hint`, then fix it with a real-world command (`scale …`, `rollback …`, `reindex`, `set …`).
+  The postmortem shows the root cause, a grade, and the matching real experience. `incident list`
+  shows all scenarios; `abort` leaves.
+- Scenarios live in `data.incidents` in `js/data.js`. Each one has a status table, logs, metrics,
+  hints, accepted `fixes` and known `wrong` moves (regex strings), a root cause, and a `realWorld` line.
+  Only the `realWorld` line refers to real experience: keep it factual.
+- **Flags** (`data.flags`): six hidden discoveries tracked per visitor in localStorage. A footer chip
+  shows progress, `flags` in the terminal lists them, and finding all six suggests getting in touch.
+  To add one, add it to `data.flags` and fire
+  `window.dispatchEvent(new CustomEvent('jalil:flag', { detail: { id } }))` where it happens.
 
 ## Set up the contact form (Web3Forms)
 
@@ -143,6 +158,8 @@ js/trace.js           experience as a distributed trace
 js/cards.js           service-card tilt and glow (mouse only)
 js/palette.js         Ctrl/⌘ K command palette
 js/effects.js         title decrypt, scroll progress, Konami burst
+js/incident.js        on-call game engine (loaded on demand)
+js/achievements.js    hidden flags + footer chip
 js/toast.js           small live-region toast
 js/cv.js              checks that cv.pdf exists before offering it
 js/notfound.js        404 terminal

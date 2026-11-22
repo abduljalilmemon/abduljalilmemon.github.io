@@ -3,6 +3,7 @@
 // commands. Real <input> with a label; command output goes to an
 // aria-live="polite" region. All text comes from data.js.
 
+import { flagReport } from './achievements.js?v=9697e32b';
 import { cvAvailable } from './cv.js?v=0c22d122';
 import { blocks, emailOf } from './render.js?v=e103ddc5';
 
@@ -75,7 +76,17 @@ export function initTerminal(data, ready = Promise.resolve()) {
     return row;
   };
   const print = (rows) => { const frag = document.createDocumentFragment(); rows.forEach((r) => frag.append(r)); out.append(frag); scroll(); };
-  const echo = (cmd) => line({ cls: 't-prompt', text: '$' }, ' ', { cls: 't-cmd', text: cmd });
+  // mode: an interactive sub-shell (the on-call game) that takes over input.
+  let mode = null;
+  const promptEl = form.querySelector('.t-prompt');
+  const echo = (cmd) => line({ cls: 't-prompt', text: mode ? mode.prompt : '$' }, ' ', { cls: 't-cmd', text: cmd });
+  const setMode = (m) => {
+    mode = m;
+    promptEl.textContent = m ? m.prompt : '$';
+    form.classList.toggle('oncall', Boolean(m));
+    input.setAttribute('aria-label', m ? `On-call shell: ${m.prompt} (type help)` : 'Terminal command (type help for a list)');
+  };
+  const api = { line, print, echo, setMode };
   const pad = (s, n) => s + ' '.repeat(Math.max(1, n - s.length));
 
   const profileRows = () => {
@@ -119,18 +130,46 @@ export function initTerminal(data, ready = Promise.resolve()) {
       setTimeout(() => document.getElementById('cf-name')?.focus({ preventScroll: true }), motionOK ? 700 : 0);
       return [line({ cls: 't-arr', text: '→ routing to #contact' })];
     },
+    incident: () => runIncident(''),
+    flags: () => {
+      const r = flagReport();
+      if (!r) return [line({ cls: 't-comment', text: 'flags are still loading, try again in a second' })];
+      return [
+        line({ cls: 't-key', text: `⚑ ${r.count}/${r.total} flags` }, { cls: 't-comment', text: r.count === r.total ? "  you've seen the whole system. let's talk: 'hire'" : '  hidden around the site' }),
+        ...r.rows.map((f) => (f.done
+          ? line({ cls: 't-arr', text: '  ✓ ' }, f.label)
+          : line({ cls: 't-comment', text: '  ○ ' }, { cls: 't-comment', text: `hint: ${f.hint}` }))),
+      ];
+    },
     'sudo hire jalil': () => [
       line({ cls: 't-comment', text: '[sudo] password for recruiter: ********' }),
       line({ cls: 't-arr', text: '✓ permission granted.' }, " offer queued on topic 'offers', partition 0."),
       line('  consumer jalil.sys is listening at ', { href: `mailto:${email}`, text: email }),
-    ],
+      (window.dispatchEvent(new CustomEvent('jalil:flag', { detail: { id: 'sudo' } })), null),
+    ].filter(Boolean),
     'cat profile.json': () => profileRows(),
     clear: () => { out.innerHTML = ''; return []; },
   };
 
+  // The on-call engine is loaded only when someone asks for it.
+  function runIncident(arg) {
+    import('./incident.js?v=079b16cd')
+      .then(({ startIncident }) => startIncident(api, data, arg))
+      .catch(() => print([line({ cls: 't-err', text: 'incident engine failed to load' })]));
+    return [line({ cls: 't-comment', text: arg === 'list' ? 'loading incidents…' : 'paging on-call…' })];
+  }
+
   const run = (raw) => {
     const cmd = raw.trim().replace(/\s+/g, ' ');
     if (!cmd) { print([echo('')]); return; }
+    if (mode) {
+      if (cmd.toLowerCase() === 'clear') { out.innerHTML = ''; return; }
+      print([echo(cmd)]);              // echo first: the engine may print (postmortem) while handling it
+      print(mode?.run(cmd) || []);
+      return;
+    }
+    const im = cmd.toLowerCase().match(/^incident(?: (.+))?$/);
+    if (im) { print([echo(cmd), ...runIncident((im[1] || '').trim())]); return; }
     const fn = commands[cmd.toLowerCase()];
     if (cmd.toLowerCase() === 'clear') { fn(); return; }
     print([echo(cmd), ...(fn ? fn() : [line({ cls: 't-err', text: T.notFound })])]);
@@ -155,7 +194,7 @@ export function initTerminal(data, ready = Promise.resolve()) {
       e.preventDefault(); hIdx = Math.min(history.length, hIdx + 1); input.value = history[hIdx] ?? '';
     } else if (e.key === 'Tab' && input.value.trim()) {
       const v = input.value.trimStart().toLowerCase();
-      const matches = allCommands.filter((c) => c.startsWith(v));
+      const matches = (mode ? mode.complete : allCommands).filter((c) => c.startsWith(v));
       if (!matches.length) return; // let Tab move focus as usual
       e.preventDefault();
       if (matches.length === 1) input.value = matches[0];
@@ -169,6 +208,16 @@ export function initTerminal(data, ready = Promise.resolve()) {
   // Clicking the screen focuses the prompt (unless the user is selecting text).
   body.addEventListener('click', (e) => {
     if (e.target.closest('a') || String(window.getSelection())) return;
+    input.focus({ preventScroll: true });
+  });
+
+  // Other modules (palette, flags chip) can run a command here.
+  window.addEventListener('jalil:term-run', (e) => {
+    const cmd = e.detail?.cmd;
+    if (!cmd) return;
+    document.getElementById('hero')?.scrollIntoView({ behavior: motionOK ? 'smooth' : 'auto' });
+    form.hidden = false;
+    run(cmd);
     input.focus({ preventScroll: true });
   });
 

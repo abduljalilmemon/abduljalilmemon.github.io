@@ -105,9 +105,11 @@ export const data = {
       ['contact', 'how to reach me'],
       ['resume', 'open cv.pdf'],
       ['hire', 'jump to the contact form'],
+      ['incident', 'on-call game: fix a broken system'],
+      ['flags', 'hidden flags you have found'],
       ['clear', 'clear the screen'],
     ],
-    hidden: ['cat profile.json', 'sudo hire jalil'],
+    hidden: ['cat profile.json', 'sudo hire jalil', 'incident list', 'incident consumer-lag', 'incident slow-search', 'incident judge-drift'],
     notFound: "command not found, try 'help'",
   },
 
@@ -295,6 +297,134 @@ export const data = {
     { name: 'ChatGPT Prompt Engineering for Developers', issuer: 'DeepLearning.AI', year: '2025' },
     { name: 'n8n Course Level 1', issuer: 'n8n.io', year: '2026' },
     { name: 'n8n Course Level 2', issuer: 'n8n.io', year: '2026' },
+  ],
+
+  // On-call game (js/incident.js). Everything here is a SIMULATION, labelled
+  // as such in the UI. Numbers are scenario props, not claims; the only real
+  // facts are the `realWorld` lines, which mirror experience bullets above.
+  // fixes/wrong: regex strings matched against the lower-cased command.
+  incidents: [
+    {
+      id: 'consumer-lag',
+      title: 'Kafka consumer lag is climbing',
+      node: 'kafka',
+      summary: 'Consumer group ioc-ingest is 48,200 messages behind and growing. Indicator lookups are going stale.',
+      status: [
+        ['kafka', 'warn', 'lag 48,200 msgs (+1.9k/min)'],
+        ['producer', 'warn', 'publish rate 3.2× baseline'],
+        ['elasticsearch', 'ok', 'p95 41ms'],
+        ['rabbitmq', 'ok', 'queue depth 12'],
+        ['llm-judge', 'ok', 'idle'],
+      ],
+      logs: {
+        kafka: ['[warn] group=ioc-ingest lag=48200 partitions=6 active_consumers=1', '[info] partitions 0-5 assigned to ioc-ingest-0'],
+        producer: ['[info] threat-feed import started: 2.1M indicators', '[info] publish rate 3.2× baseline, no errors'],
+      },
+      metrics: {
+        kafka: ['partitions: 6', 'consumers: 1 (one consumer is reading all 6 partitions)', 'consume ~1.1k msg/s vs. produce ~3.0k msg/s'],
+        producer: ['batch size unchanged', 'error rate 0%'],
+      },
+      hints: [
+        'Compare how fast messages arrive with how fast they are consumed.',
+        'How many partitions does the topic have, and how many consumers read them?',
+        'Try: scale consumers <n>',
+      ],
+      fixes: [
+        { match: '^scale consumers? 6$', note: '6 consumers for 6 partitions: every partition gets its own reader. Lag drains in ~4 min.' },
+        { match: '^scale consumers? ([7-9]|\\d{2,})$', note: 'Lag drains, but consumers beyond 6 sit idle: a partition is read by at most one consumer in a group.' },
+        { match: '^scale consumers? [45]$', note: 'Lag drains, a bit slower: some consumers still own two partitions. 6 would match the partition count.' },
+      ],
+      wrong: [
+        { match: '^scale consumers? [0-3]$', out: 'Still behind: that many consumers cannot keep up with 3.2× traffic. Lag keeps growing.' },
+        { match: '^restart kafka', out: 'Broker restart triggered a consumer-group rebalance: lag +6k during the pause. The brokers were healthy.' },
+        { match: '^(restart|stop|kill) producer', out: 'The import resumed from its checkpoint. Same traffic, same lag. Stopping the business is not a fix.' },
+      ],
+      rootCause: 'A bulk threat-feed import tripled the publish rate while consumer group ioc-ingest ran a single consumer across 6 partitions.',
+      realWorld: 'At TechnoGenics I reworked IOC batch handling on Kafka: up to 50,000 IOCs per message, 10× the previous 5,000 IOC limit.',
+    },
+    {
+      id: 'slow-search',
+      title: 'Search latency spiked after a deploy',
+      node: 'elasticsearch',
+      summary: 'p95 search latency went from 41 ms to 2.8 s right after deploy v2.4.1. Analyst IOC searches are timing out.',
+      status: [
+        ['elasticsearch', 'warn', 'p95 2,830ms (was 41ms) · timeouts 7%'],
+        ['producer', 'info', 'deploy v2.4.1 finished 18 min ago'],
+        ['kafka', 'ok', 'lag 120'],
+        ['rabbitmq', 'ok', 'queue depth 9'],
+        ['llm-judge', 'ok', 'idle'],
+      ],
+      logs: {
+        elasticsearch: ['[warn] slowlog: wildcard query on ioc.value took 2.8s (scanned 41M terms)', '[warn] ioc.value is now type text: exact lookups run as wildcard scans'],
+        producer: ['[info] deploy v2.4.1 finished', '[info] index template updated: ioc.value keyword → text'],
+      },
+      metrics: {
+        elasticsearch: ['cpu 94% · heap 61%', 'query mix: 88% wildcard on ioc.value', 'index template version: v2.4.1'],
+      },
+      hints: [
+        'What changed 18 minutes ago?',
+        'Read the slowlog: which field do the slow queries hit, and what type is it now?',
+        'Undo the mapping change: roll back the template, or reindex with ioc.value as keyword.',
+      ],
+      fixes: [
+        { match: '^rollback( (deploy|elasticsearch|es|template|mapping|v2\\.4\\.1))?$', note: 'Template rolled back: ioc.value is keyword again and the hot index is reindexed in the background. p95 back to 40ms.' },
+        { match: '^reindex( .*)?$', note: 'Reindexed with ioc.value as keyword: exact and prefix lookups hit the term index instead of scanning. p95 back to 40ms.' },
+      ],
+      wrong: [
+        { match: '^restart (elasticsearch|es)', out: 'Nodes restarted with cold caches: p95 3.4s for two minutes, then back to 2.8s. The cluster is not sick, the queries are.' },
+        { match: '^(scale|add) (elasticsearch|es|nodes?|data)', out: '+2 data nodes: p95 2.1s. Hardware makes a full scan a little faster and a lot more expensive.' },
+        { match: '^(clear|flush)[- ]?cache', out: 'Query cache cleared: no change. Every wildcard misses the cache anyway.' },
+      ],
+      rootCause: 'Deploy v2.4.1 changed ioc.value from keyword to text, so exact and prefix IOC lookups became wildcard scans over analyzed terms.',
+      realWorld: 'At TechnoGenics, structured indexing in Elasticsearch made search queries 50× faster.',
+    },
+    {
+      id: 'judge-drift',
+      title: 'Eval verdicts flipped after a model swap',
+      node: 'llm-judge',
+      summary: "Nightly eval: 31% of answers changed verdict since yesterday, but the agent under test didn't change.",
+      status: [
+        ['llm-judge', 'warn', 'verdict flips 31% vs. yesterday'],
+        ['rule-checks', 'ok', '99% agreement with yesterday'],
+        ['kafka', 'ok', 'lag 40'],
+        ['elasticsearch', 'ok', 'p95 39ms'],
+        ['rabbitmq', 'ok', 'eval jobs draining normally'],
+      ],
+      logs: {
+        'llm-judge': ['[info] judge model judge-v2 (was judge-v1), config change at 02:10', '[info] sampling temperature=0.9', '[warn] same answer judged PASS, then FAIL on retry (3 of 5 samples)'],
+        rabbitmq: ['[info] 1,200 eval jobs queued and consumed normally'],
+      },
+      metrics: {
+        'llm-judge': ['self-agreement on retries: 61%', 'agreement with rule checks: 58% (was 93%)', 'agent under test: same version, same prompts'],
+      },
+      hints: [
+        "If the agent didn't change, what did?",
+        "A judge that disagrees with itself on retries isn't measuring the agent.",
+        'Make the judge deterministic again, or roll back the judge config.',
+      ],
+      fixes: [
+        { match: '^set (judge\\.|llm-judge\\.)?temperature 0(\\.0+)?$', note: 'Judge pinned to temperature 0: retries agree again and verdicts are back to 93% agreement with rule checks.' },
+        { match: '^rollback( (llm-judge|judge|config|judge-config))?$', note: 'Judge config rolled back to judge-v1 at temperature 0. Swap the judge later, against its own baseline.' },
+        { match: '^pin (judge|llm-judge)', note: 'Judge model and sampling pinned: retries agree again. Verdicts measure the agent, not the judge.' },
+      ],
+      wrong: [
+        { match: '^rollback agent', out: 'Agent rolled back to the version it was already on. Nothing changed, because the agent never did.' },
+        { match: '^restart (llm-judge|judge)', out: 'Judge restarted with the same config: verdicts still flip (29%).' },
+        { match: '^(rerun|retry|run eval)', out: 'Eval re-run: 27% flips. Different number, same problem: a noisy judge.' },
+      ],
+      rootCause: 'The judge was swapped to a new model at temperature 0.9, so verdicts measured judge noise instead of agent behaviour.',
+      realWorld: 'This is what SwapCheck guards against: compare against a pinned reference config before shipping a swap. At Turing I ranked model responses with written technical rationales.',
+    },
+  ],
+
+  // Hidden flags (js/achievements.js). Saved per visitor in localStorage.
+  flags: [
+    { id: 'palette', label: 'opened the command palette', hint: 'Ctrl/⌘ K' },
+    { id: 'sudo', label: 'tried sudo on the terminal', hint: 'the terminal has root opinions' },
+    { id: 'trace', label: 'expanded every span in the trace', hint: 'experience is a distributed trace' },
+    { id: 'incident', label: 'resolved an incident', hint: "type 'incident' in the terminal" },
+    { id: 'konami', label: 'flooded the message bus', hint: '↑↑↓↓←→←→BA' },
+    { id: 'explorer', label: 'scrolled through every section', hint: 'read the whole system' },
   ],
 
   // SEO / JSON-LD (index.html <head>). Facts mirror the content above.
