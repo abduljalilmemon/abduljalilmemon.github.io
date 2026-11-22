@@ -1,5 +1,5 @@
 // jalil.sys: page behaviour. Loaded as an ES module (deferred by default).
-import { data } from './data.js?v=bfd7fda0';
+import { data } from './data.js?v=3f62d615';
 import { renderAll, emailOf } from './render.js?v=e103ddc5';
 import { initBoot } from './boot.js?v=5eea878a';
 import { initTerminal } from './terminal.js?v=70f35bea';
