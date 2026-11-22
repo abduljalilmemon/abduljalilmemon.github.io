@@ -794,14 +794,18 @@ footer {
   background: linear-gradient(to bottom, var(--accent), var(--accent2));
 }
 .award-rank {
-  font-family: var(--display);
-  font-size: 2.2rem;
-  font-weight: 800;
+  /* fixed square badge: every rank reads the same size, every row lines up */
+  width: 4.5rem; height: 4.5rem;
+  flex-shrink: 0;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 0.55rem;
+  border: 1px solid rgba(0,229,255,0.25);
+  background: rgba(0,229,255,0.05);
   color: var(--accent);
   line-height: 1;
-  flex-shrink: 0;
-  width: 6.5rem; /* fixed column so every award's text lines up */
 }
+.award-rank-num { font-family: var(--display); font-size: 2.6rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.award-rank-suffix { font-family: var(--mono); font-size: 0.8rem; font-weight: 700; margin-top: 0.2rem; margin-left: 0.1rem; }
 .award-title { font-family: var(--display); font-size: 1.05rem; font-weight: 700; }
 .award-meta { font-family: var(--mono); font-size: 0.72rem; color: var(--accent2-text); margin: 0.2rem 0 0.4rem; }
 .award-note { font-size: 0.9rem; color: rgba(232,232,240,0.72); font-weight: 300; }

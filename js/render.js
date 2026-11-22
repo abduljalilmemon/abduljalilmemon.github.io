@@ -70,7 +70,8 @@ export const blocks = {
 
   awards: (d) => d.awards.map((a) =>
     `${i(4)}<article class="award-item">` +
-    `${i(5)}<div class="award-rank" aria-hidden="true">${esc(a.rank)}</div>` +
+    // rank '1st' -> big digit + small suffix in a fixed badge (Syne's '1' is far narrower than '2')
+    `${i(5)}<div class="award-rank" aria-hidden="true"><span class="award-rank-num">${esc(a.rank.replace(/\D+$/, ''))}</span><span class="award-rank-suffix">${esc(a.rank.replace(/^\d+/, ''))}</span></div>` +
     `${i(5)}<div class="award-body">` +
     `${i(6)}<h3 class="award-title">${esc(a.title)}</h3>` +
     `${i(6)}<div class="award-meta">${[a.org, a.place, a.date].map(esc).join(' · ')}</div>` +
