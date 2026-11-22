@@ -172,7 +172,11 @@ export const blocks = {
       alumniOf: org(S.alumniOf),
       affiliation: org(S.affiliation),
       knowsAbout: ['Python', 'Distributed Systems', 'LLM Evaluation', 'Search Infrastructure'],
-      award: d.awards.map((a) => (a.title.includes(a.date) ? a.title : `${a.title} (${a.date})`)),
+      award: d.awards.map((a) => {
+        if (a.title.includes(a.date)) return a.title;
+        const year = (a.date.match(/\d{4}/) || [''])[0];
+        return year && a.title.includes(year) ? `${a.title} (${a.date.replace(year, '').trim()})` : `${a.title} (${a.date})`;
+      }),
     }, null, 2);
     return `\n${json.replace(/</g, '\\u003c').replace(/^/gm, '  ')}\n  `;
   },

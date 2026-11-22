@@ -16,7 +16,7 @@ export const data = {
     tagline: "Backend systems that scale. LLM evals that don't lie.",
     summary:
       'Building scalable backend systems, high-throughput data pipelines, and AI-driven solutions. 5+ years delivering production-grade systems in cybersecurity and AI evaluation/alignment workflows.',
-    availability: 'Open to working student, internship & full-time roles in Germany.',
+    availability: 'Based in Germany. Open to working student, internship & full-time roles in Berlin, Cottbus, Dresden and more, on-site or remote.',
     cv: '/cv.pdf',
     terminal: {
       name: 'Abdul Jalil Memon',
@@ -26,6 +26,7 @@ export const data = {
       last_role: 'Python Developer @ Turing',
       education: 'M.Sc. AI @ BTU Cottbus',
       seeking: ['working_student', 'internship', 'full_time'],
+      open_to: ['berlin', 'cottbus', 'dresden', 'remote'],
       status: 'open_to_work',
     },
     about: [
@@ -37,6 +38,7 @@ export const data = {
     ],
     highlights: [
       { icon: '📍', label: 'Location', value: 'Cottbus, Germany' },
+      { icon: '🧭', label: 'Open to', value: 'Berlin · Cottbus · Dresden · Remote' },
       { icon: '💼', label: 'Last Role', value: 'Python Developer @ Turing' },
       { icon: '🎓', label: 'Education', value: 'M.Sc. AI · BTU Cottbus-Senftenberg' },
       { icon: '✉️', label: 'Email', email: true }, // value assembled at runtime (see links.email)
@@ -108,7 +110,17 @@ export const data = {
     notFound: "command not found, try 'help'",
   },
 
+  // newest first
   awards: [
+    {
+      rank: '2nd',
+      title: '2nd Place · NASA International Space Apps Challenge 2026',
+      org: 'NASA Space Apps',
+      place: 'BTU Cottbus-Senftenberg',
+      date: 'Nov 2026',
+      project: { name: 'FireChronos', anchor: '#project-firechronos' },
+      note: 'nominated for Global Judging; built with a team of five.',
+    },
     {
       rank: '1st',
       title: '1st Place · Monad Blitz Berlin Hackathon',
@@ -117,15 +129,6 @@ export const data = {
       date: 'Sep 2026',
       project: { name: 'Streaker', anchor: '#project-streaker' },
       note: 'built with a small team; working demo shipped within the event deadline.',
-    },
-    {
-      rank: '2nd',
-      title: '2nd Place (local) · NASA International Space Apps Challenge 2026',
-      org: 'NASA Space Apps',
-      place: 'BTU Cottbus-Senftenberg',
-      date: '2026',
-      project: { name: 'FireChronos', anchor: '#project-firechronos' },
-      note: 'nominated for Global Judging; built with a team of five.',
     },
   ],
 
@@ -223,7 +226,7 @@ export const data = {
       name: 'FireChronos',
       status: 'shipped',
       desc: "Interactive geospatial platform combining NASA's MODIS and VIIRS satellite data to explore 25 years of fire activity across Europe (2001–2025): maps, burning calendars, seasonal patterns and weather context. VIIRS sees far smaller fires than MODIS, so raw counts jump when the record switches sensors in 2012; we built a correction, tested it on held-out years, and made every number traceable to its source.",
-      award: '2nd Place (local) · NASA Space Apps 2026',
+      award: '2nd Place · NASA Space Apps · Nov 2026',
       stack: ['NASA MODIS', 'VIIRS', 'Geospatial', 'Remote Sensing', 'Data Science'],
       links: [
         { label: 'live demo', href: 'https://nasa-hackaton-2026.vercel.app' },
