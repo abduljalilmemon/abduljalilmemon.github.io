@@ -4,7 +4,7 @@
 // aria-live="polite" region. All text comes from data.js.
 
 import { cvAvailable } from './cv.js?v=0c22d122';
-import { blocks, emailOf } from './render.js?v=30a6e19a';
+import { blocks, emailOf } from './render.js?v=e103ddc5';
 
 const TYPE_MS = 45;
 

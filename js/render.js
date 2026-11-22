@@ -171,7 +171,7 @@ export const blocks = {
       sameAs: [L.github.url, L.linkedin.url],
       alumniOf: org(S.alumniOf),
       affiliation: org(S.affiliation),
-      knowsAbout: ['Python', 'Distributed Systems', 'LLM Evaluation', 'Search Infrastructure'],
+      knowsAbout: ['Python', 'Distributed Systems', 'LLM Evaluation', 'AI Coding Agents', 'Agent Evaluation', 'Search Infrastructure'],
       award: d.awards.map((a) => {
         if (a.title.includes(a.date)) return a.title;
         const year = (a.date.match(/\d{4}/) || [''])[0];

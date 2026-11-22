@@ -1,11 +1,11 @@
 // jalil.sys: page behaviour. Loaded as an ES module (deferred by default).
-import { data } from './data.js?v=9ad0016c';
-import { renderAll, emailOf } from './render.js?v=30a6e19a';
+import { data } from './data.js?v=bfd7fda0';
+import { renderAll, emailOf } from './render.js?v=e103ddc5';
 import { initBoot } from './boot.js?v=5eea878a';
-import { initTerminal } from './terminal.js?v=74d42975';
+import { initTerminal } from './terminal.js?v=70f35bea';
 import { initTrace } from './trace.js?v=8c662fe2';
 import { initCards } from './cards.js?v=91bd5b31';
-import { initPalette } from './palette.js?v=2a8c3bd7';
+import { initPalette } from './palette.js?v=6d142a4b';
 import { initEffects } from './effects.js?v=3bf109ab';
 import { initMetrics } from './metrics.js?v=bff14201';
 

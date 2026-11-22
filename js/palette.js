@@ -4,7 +4,7 @@
 // closes, and focus returns to whatever opened it.
 
 import { cvAvailable } from './cv.js?v=0c22d122';
-import { emailOf } from './render.js?v=30a6e19a';
+import { emailOf } from './render.js?v=e103ddc5';
 import { toast } from './toast.js?v=e12d8853';
 
 const isMac = /Mac|iPhone|iPad/.test(navigator.userAgentData?.platform || navigator.platform || '');

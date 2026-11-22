@@ -22,7 +22,7 @@ export const data = {
       name: 'Abdul Jalil Memon',
       role: 'Senior Software Engineer',
       location: 'Cottbus, Germany',
-      specializations: ['Python Backend', 'Distributed Systems', 'LLM Evaluation & RLHF', 'Search Infrastructure'],
+      specializations: ['Python Backend', 'Distributed Systems', 'LLM Evaluation & RLHF', 'AI Coding Agents', 'Search Infrastructure'],
       last_role: 'Python Developer @ Turing',
       education: 'M.Sc. AI @ BTU Cottbus',
       seeking: ['working_student', 'internship', 'full_time'],
@@ -34,6 +34,7 @@ export const data = {
       'At TechnoGenics, I led backend initiatives including high-volume IOC processing pipelines, ANTLR-based structured search, ElasticSearch indexing optimizations achieving 50× faster queries, and distributed job orchestration using RabbitMQ, Kafka, and MongoDB.',
       'At Turing (Nov 2024 – Apr 2026), I worked on AI model development and evaluation — writing clean, efficient Python code and collaborating with research teams to refine model behavior and performance in LLM alignment workflows.',
       "I'm currently based in Cottbus, Germany, pursuing an M.Sc. in Artificial Intelligence at BTU Cottbus-Senftenberg, while staying active in student organizations including the StuRa, Pakistan Student Association (PSA) and JALTA, a student consulting network.",
+      'I build with AI coding agents and I evaluate them. This site was built with Claude Code as a pair programmer; at Turing I benchmarked LLMs on programming tasks; and SwapCheck, my current project, checks whether an agent still behaves when you swap the model behind it.',
       "I'm passionate about systems that scale, architectures that are clean, and teams that innovate with purpose.",
     ],
     highlights: [
@@ -139,7 +140,7 @@ export const data = {
     { category: 'Messaging & Infra', items: [['RabbitMQ', true], ['Kafka', true], 'Docker', 'Kubernetes', 'GCP'] },
     {
       category: 'AI / ML',
-      items: [['LLM Evaluation', true], ['RLHF', true], ['LangGraph', true], 'LangChain', 'RAG', 'ChromaDB', 'LLM-as-judge / Evals', 'SFT', 'NLP / BERT', 'Prompt Eng.'],
+      items: [['Coding Agents · Claude Code', true], ['LLM Evaluation', true], ['RLHF', true], ['LangGraph', true], 'Agent Evaluation', 'LangChain', 'RAG', 'ChromaDB', 'LLM-as-judge / Evals', 'SFT', 'NLP / BERT', 'Prompt Eng.'],
     },
     { category: 'Core Competencies', items: [['Distributed Systems', true], 'Microservices', 'REST APIs', 'GraphQL', 'Search & Indexing'] },
     { category: 'Automation', items: [['n8n · Certified L1 + L2', true]] },
